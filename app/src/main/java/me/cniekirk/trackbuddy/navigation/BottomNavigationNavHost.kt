@@ -16,39 +16,28 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import me.cniekirk.trackbuddy.feature.search.SearchScreen
+import me.cniekirk.trackbuddy.feature.search.SearchViewModel
 
 private val items = listOf(
-    BottomNavItem(
-        label = "Search",
-        route = "search",
-        icon = Icons.Default.Search
-    ),
-    BottomNavItem(
-        label = "Plan",
-        route = "plan",
-        icon = Icons.Default.LibraryBooks
-    ),
-    BottomNavItem(
-        label = "Favourites",
-        route = "favourites",
-        icon = Icons.Default.Favorite
-    ),
-    BottomNavItem(
-        label = "Settings",
-        route = "settings",
-        icon = Icons.Default.Settings
-    )
+    BottomNavDestination.Search,
+    BottomNavDestination.Plan,
+    BottomNavDestination.Favourites,
+    BottomNavDestination.Settings
 )
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNavigationNavHost(
-    navController: NavHostController = rememberAnimatedNavController()
+    navController: NavHostController = rememberAnimatedNavController(),
+    startDestination: String = BottomNavDestination.Search.route
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
 
@@ -80,11 +69,16 @@ fun BottomNavigationNavHost(
     ) { paddingValues ->
         AnimatedNavHost(
             navController = navController,
-            startDestination = items[0].route,
+            startDestination = startDestination,
             modifier = Modifier.padding(paddingValues)
         ) {
             // composable...
-            
+            composable(
+                route = BottomNavDestination.Search.route
+            ) {
+                val viewModel = hiltViewModel<SearchViewModel>()
+                SearchScreen(viewModel = viewModel)
+            }
         }
     }
 }

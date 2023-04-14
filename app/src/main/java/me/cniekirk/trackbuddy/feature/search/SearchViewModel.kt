@@ -12,8 +12,7 @@ class SearchViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), ContainerHost<SearchState, SearchEffect> {
 
-
-
     override val container = container<SearchState, SearchEffect>(SearchState())
+
 
 }

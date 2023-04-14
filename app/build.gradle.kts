@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.immutable)
 
     implementation(libs.hilt)
+    implementation(libs.hilt.navigation)
     kapt(libs.hilt.compiler)
 
     implementation(libs.accompanist.navigation)
