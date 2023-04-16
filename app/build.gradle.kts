@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.com.google.dagger.hilt.android)
+    alias(libs.plugins.com.google.devtools.ksp)
+    id(libs.plugins.parcelize.get().pluginId)
 }
 
 android {
@@ -23,9 +25,6 @@ android {
     }
 
     buildTypes {
-        debug {
-            isMinifyEnabled = false
-        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -69,6 +68,7 @@ dependencies {
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
+    implementation(libs.compose.livedata)
     implementation(libs.material3)
     implementation(libs.icons)
 
@@ -78,11 +78,17 @@ dependencies {
     implementation(libs.hilt.navigation)
     kapt(libs.hilt.compiler)
 
+    implementation(libs.bundles.room)
+    ksp(libs.room.compiler)
+
     implementation(libs.accompanist.navigation)
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.moshi)
     implementation(libs.logging.interceptor)
+
+    implementation(libs.moshi)
+    ksp(libs.moshi.codegen)
 
     implementation(libs.timber)
 

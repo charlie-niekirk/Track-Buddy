@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 
 private const val START_ARG_ID = "start"
 private const val END_ARG_ID = "end"
+private const val REQUIRED_ARG_ID = "isRequired"
 
 sealed class BottomNavDestination(val label: String, val route: String, val icon: ImageVector) {
 
@@ -37,6 +38,24 @@ sealed class BottomNavDestination(val label: String, val route: String, val icon
         route = "settings",
         icon = Icons.Default.Settings
     )
+}
+
+sealed class SecondaryDestination(val route: String) {
+
+    object StationSelect : SecondaryDestination(
+        route = "stationSelect/{$REQUIRED_ARG_ID}"
+    )
+}
+
+class StationSelectArgs(val isRequired: Boolean) {
+    constructor(savedStateHandle: SavedStateHandle) :
+            this(
+                checkNotNull(savedStateHandle[REQUIRED_ARG_ID]) as Boolean,
+            )
+}
+
+fun NavController.navigateToStationSelect(isRequired: Boolean) {
+    this.navigate("stationSelect/$isRequired")
 }
 
 fun NavController.navigateToServiceList(start: String, end: String) {

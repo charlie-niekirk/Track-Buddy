@@ -10,4 +10,8 @@ data class SearchState(
 sealed class SearchEffect {
 
     data class Error(@StringRes val message: Int) : SearchEffect()
+
+    object RequiredPressed : SearchEffect()
+
+    object OptionalPressed : SearchEffect()
 }

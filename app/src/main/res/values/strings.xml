@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Track Buddy</string>
+    <string name="search_title">Search</string>
+    <string name="departure_station_placeholder">Select Departure Station</string>
+    <string name="arrival_station_placeholder">Select Arrival Station (optional)</string>
+    <string name="swap_button">Swap</string>
+    <string name="station_select_title">Select Station</string>
 </resources>

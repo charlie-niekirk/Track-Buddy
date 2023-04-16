@@ -1,0 +1,112 @@
+package me.cniekirk.trackbuddy.data.model
+
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import me.cniekirk.trackbuddy.data.util.SingleOrList
+
+@JsonClass(generateAdapter = true)
+data class TrainService(
+    @Json(name = "activities")
+    val activities: String?,
+    @Json(name = "adhocAlerts")
+    val adhocAlerts: Any?,
+    @Json(name = "arrivalSource")
+    val arrivalSource: Any?,
+    @Json(name = "arrivalSourceInstance")
+    val arrivalSourceInstance: Any?,
+    @Json(name = "arrivalType")
+    val arrivalType: Int?,
+    @Json(name = "arrivalTypeSpecified")
+    val arrivalTypeSpecified: Boolean?,
+    @Json(name = "ata")
+    val ata: String?,
+    @Json(name = "ataSpecified")
+    val ataSpecified: Boolean?,
+    @Json(name = "atd")
+    val atd: String?,
+    @Json(name = "atdSpecified")
+    val atdSpecified: Boolean?,
+    @Json(name = "cancelReason")
+    val cancelReason: Any?,
+    @Json(name = "category")
+    val category: String?,
+    @Json(name = "currentDestinations")
+    val currentDestinations: Any?,
+    @Json(name = "currentOrigins")
+    val currentOrigins: Any?,
+    @Json(name = "delayReason")
+    val delayReason: Any?,
+    @Json(name = "departureSource")
+    val departureSource: String?,
+    @Json(name = "departureSourceInstance")
+    val departureSourceInstance: Any?,
+    @Json(name = "departureType")
+    val departureType: Int?,
+    @Json(name = "departureTypeSpecified")
+    val departureTypeSpecified: Boolean?,
+    @Json(name = "destination")
+    val destination: List<Destination?>?,
+    @Json(name = "detachFront")
+    val detachFront: Boolean?,
+    @Json(name = "eta")
+    val eta: String?,
+    @Json(name = "etaSpecified")
+    val etaSpecified: Boolean?,
+    @Json(name = "etd")
+    val etd: String?,
+    @Json(name = "etdSpecified")
+    val etdSpecified: Boolean?,
+    @Json(name = "filterLocationCancelled")
+    val filterLocationCancelled: Boolean?,
+    @Json(name = "filterLocationOperational")
+    val filterLocationOperational: Boolean?,
+    @SingleOrList
+    val formation: List<Formation>?,
+    @Json(name = "isCancelled")
+    val isCancelled: Boolean?,
+    @Json(name = "isCharter")
+    val isCharter: Boolean?,
+    @Json(name = "isCircularRoute")
+    val isCircularRoute: Boolean?,
+    @Json(name = "isOperationalCall")
+    val isOperationalCall: Boolean?,
+    @Json(name = "isPassengerService")
+    val isPassengerService: Boolean?,
+    @Json(name = "isReverseFormation")
+    val isReverseFormation: Boolean?,
+    @Json(name = "length")
+    val length: Int?,
+    @Json(name = "locations")
+    val locations: List<Location>?,
+    @Json(name = "operator")
+    val operator: String?,
+    @Json(name = "operatorCode")
+    val operatorCode: String?,
+    @Json(name = "origin")
+    val origin: List<Origin?>?,
+    @Json(name = "platform")
+    val platform: String?,
+    @Json(name = "platformIsHidden")
+    val platformIsHidden: Boolean?,
+    @Json(name = "rid")
+    val rid: String?,
+    @Json(name = "rsid")
+    val rsid: String?,
+    @Json(name = "sdd")
+    val sdd: String?,
+    @Json(name = "serviceIsSupressed")
+    val serviceIsSupressed: Boolean?,
+    @Json(name = "sta")
+    val sta: String?,
+    @Json(name = "staSpecified")
+    val staSpecified: Boolean?,
+    @Json(name = "std")
+    val std: String?,
+    @Json(name = "stdSpecified")
+    val stdSpecified: Boolean?,
+    @Json(name = "trainid")
+    val trainid: String?,
+    @Json(name = "uid")
+    val uid: String?
+)
