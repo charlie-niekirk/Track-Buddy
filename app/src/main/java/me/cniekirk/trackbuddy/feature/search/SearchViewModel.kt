@@ -21,8 +21,8 @@ class SearchViewModel @Inject constructor(
     fun setStations(requiredStation: TrainStation?, optionalStation: TrainStation?) = intent {
         reduce {
             state.copy(
-                requiredDestination = requiredStation?.name ?: "",
-                optionalDestination = optionalStation?.name ?: ""
+                requiredDestination = requiredStation,
+                optionalDestination = optionalStation
             )
         }
     }
@@ -36,6 +36,25 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onSwapPressed() = intent {
+        reduce {
+            val newReq = state.optionalDestination
+            val newOpt = state.requiredDestination
+            state.copy(
+                requiredDestination = newReq,
+                optionalDestination = newOpt
+            )
+        }
+    }
 
+    fun onDepartingPressed() = intent {
+        reduce {
+            state.copy(direction = Direction.DEPARTING)
+        }
+    }
+
+    fun onArrivingPressed() = intent {
+        reduce {
+            state.copy(direction = Direction.ARRIVING)
+        }
     }
 }

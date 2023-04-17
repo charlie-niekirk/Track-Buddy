@@ -5,4 +5,11 @@
     <string name="arrival_station_placeholder">Select Arrival Station (optional)</string>
     <string name="swap_button">Swap</string>
     <string name="station_select_title">Select Station</string>
+    <string name="departing_direction_label">Departing</string>
+    <string name="arriving_direction_label">Arriving</string>
+    <string name="coming_from_direction_label">Coming from</string>
+    <string name="coming_from_label">Coming from</string>
+    <string name="arriving_label">Arriving at</string>
+    <string name="departing_label">Departing from</string>
+    <string name="search_button">Search</string>
 </resources>

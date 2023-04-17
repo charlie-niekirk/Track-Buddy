@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -13,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -65,7 +67,11 @@ fun BottomNavigationNavHost(
                             Text(text = item.label)
                         },
                         icon = {
-                            Image(imageVector = item.icon, contentDescription = null)
+                            Image(
+                                imageVector = item.icon,
+                                contentDescription = null,
+                                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurface)
+                            )
                         }
                     )
                 }
@@ -96,21 +102,21 @@ fun BottomNavigationNavHost(
                         else -> null
                     }
                 }
-            ) {
-                val requiredStationState = navController.currentBackStackEntry
-                    ?.savedStateHandle
-                    ?.getLiveData<TrainStation>("required_station")?.observeAsState()
+            ) { backStackEntry ->
+                val requiredStationState = backStackEntry
+                    .savedStateHandle
+                    .getLiveData<TrainStation>("required_station").observeAsState()
 
-                val optionalStationState = navController.currentBackStackEntry
-                    ?.savedStateHandle
-                    ?.getLiveData<TrainStation>("optional_station")?.observeAsState()
+                val optionalStationState = backStackEntry
+                    .savedStateHandle
+                    .getLiveData<TrainStation>("optional_station").observeAsState()
 
                 val viewModel = hiltViewModel<SearchViewModel>()
 
                 SearchScreen(
                     viewModel = viewModel,
-                    requiredStation = requiredStationState?.value,
-                    optionalStation = optionalStationState?.value,
+                    requiredStation = requiredStationState,
+                    optionalStation = optionalStationState,
                     navigateToRequired = {
                         navController.navigateToStationSelect(true)
                     },
@@ -129,13 +135,13 @@ fun BottomNavigationNavHost(
                 StationSelectScreen(
                     viewModel = viewModel,
                     onRequiredStationSelected = { station ->
-                        navController.currentBackStackEntry
+                        navController.previousBackStackEntry
                             ?.savedStateHandle
                             ?.set("required_station", station)
                         navController.popBackStack()
                     },
                     onOptionalStationSelected = { station ->
-                        navController.currentBackStackEntry
+                        navController.previousBackStackEntry
                             ?.savedStateHandle
                             ?.set("optional_station", station)
                         navController.popBackStack()

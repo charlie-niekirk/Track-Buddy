@@ -1,3 +1,5 @@
+@Suppress("DSL_SCOPE_VIOLATION")
+
 plugins {
     kotlin("kapt")
     alias(libs.plugins.com.android.application)

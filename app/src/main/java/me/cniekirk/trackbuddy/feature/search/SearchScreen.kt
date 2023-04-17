@@ -1,5 +1,6 @@
 package me.cniekirk.trackbuddy.feature.search
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,14 +8,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SwapVert
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -22,14 +26,18 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.UiMode
 import androidx.compose.ui.unit.dp
 import me.cniekirk.trackbuddy.R
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation
+import me.cniekirk.trackbuddy.ui.components.TextRadioButton
 import me.cniekirk.trackbuddy.ui.theme.TrackBuddyTheme
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -37,8 +45,8 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
-    requiredStation: TrainStation?,
-    optionalStation: TrainStation?,
+    requiredStation: State<TrainStation?>,
+    optionalStation: State<TrainStation?>,
     navigateToRequired: () -> Unit,
     navigateToOptional: () -> Unit
 ) {
@@ -54,34 +62,37 @@ fun SearchScreen(
         }
     }
 
+    val requiredText = state.requiredDestination?.name ?: stringResource(id = R.string.departure_station_placeholder)
+    val optionalText = state.optionalDestination?.name ?: stringResource(id = R.string.arrival_station_placeholder)
+
     SearchScreenContent(
-        requiredStation = state.requiredDestination,
-        optionalStation = state.optionalDestination,
+        direction = state.direction,
+        requiredStation = requiredText,
+        optionalStation = optionalText,
         onRequiredPressed = viewModel::onRequiredPressed,
-        onOptionalPressed = viewModel::onOptionalPressed
+        onOptionalPressed = viewModel::onOptionalPressed,
+        onSwapPressed = viewModel::onSwapPressed,
+        onDepartingPressed = viewModel::onDepartingPressed,
+        onArrivingPressed = viewModel::onArrivingPressed
     )
 
     LaunchedEffect(Unit) {
-        viewModel.setStations(requiredStation, optionalStation)
+        viewModel.setStations(requiredStation.value, optionalStation.value)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreenContent(
+    direction: Direction,
     requiredStation: String,
     optionalStation: String,
     onRequiredPressed: () -> Unit,
-    onOptionalPressed: () -> Unit
+    onOptionalPressed: () -> Unit,
+    onSwapPressed: () -> Unit,
+    onDepartingPressed: () -> Unit,
+    onArrivingPressed: () -> Unit
 ) {
-    val required = requiredStation.ifEmpty {
-        stringResource(id = R.string.departure_station_placeholder)
-    }
-
-    val optional = optionalStation.ifEmpty {
-        stringResource(id = R.string.arrival_station_placeholder)
-    }
-
     Column(modifier = Modifier.fillMaxSize()) {
         CenterAlignedTopAppBar(
             title = {
@@ -92,19 +103,53 @@ fun SearchScreenContent(
             }
         )
 
+        Row(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextRadioButton(
+                label = stringResource(id = R.string.departing_direction_label),
+                selected = direction == Direction.DEPARTING
+            ) {
+                onDepartingPressed()
+            }
+
+            Spacer(modifier = Modifier.size(32.dp))
+
+            TextRadioButton(
+                label = stringResource(id = R.string.arriving_direction_label),
+                selected = direction == Direction.ARRIVING
+            ) {
+                onArrivingPressed()
+            }
+        }
+
+        val requiredLabel = if (direction == Direction.DEPARTING) {
+            stringResource(id = R.string.departing_label)
+        } else {
+            stringResource(id = R.string.arriving_label)
+        }
+
+        val optionalLabel = if (direction == Direction.DEPARTING) {
+            stringResource(id = R.string.arriving_label)
+        } else {
+            stringResource(id = R.string.coming_from_label)
+        }
+
         Row(modifier = Modifier.height(IntrinsicSize.Max)) {
             Column(modifier = Modifier.weight(1f)) {
                 StationSelector(
-                    modifier = Modifier
-                        .padding(vertical = 16.dp, horizontal = 16.dp),
-                    stationName = required
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                    label = requiredLabel,
+                    stationName = requiredStation
                 ) {
                     onRequiredPressed()
                 }
 
                 StationSelector(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    stationName = optional
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                    label = optionalLabel,
+                    stationName = optionalStation
                 ) {
                     onOptionalPressed()
                 }
@@ -115,7 +160,9 @@ fun SearchScreenContent(
                     .padding(top = 16.dp, end = 16.dp)
                     .weight(0.2f)
                     .fillMaxHeight()
-                    .clickable { }
+                    .clickable {
+                        onSwapPressed()
+                    }
                     .background(
                         color = MaterialTheme.colorScheme.tertiaryContainer,
                         shape = RoundedCornerShape(8.dp)
@@ -125,8 +172,19 @@ fun SearchScreenContent(
             ) {
                 Image(
                     imageVector = Icons.Default.SwapVert,
-                    contentDescription = stringResource(id = R.string.swap_button))
+                    contentDescription = stringResource(id = R.string.swap_button),
+                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurface)
+                )
             }
+        }
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+            onClick = {  }
+        ) {
+            Text(text = stringResource(id = R.string.search_button))
         }
     }
 }
@@ -134,6 +192,7 @@ fun SearchScreenContent(
 @Composable
 fun StationSelector(
     modifier: Modifier = Modifier,
+    label: String,
     stationName: String,
     onPressed: () -> Unit
 ) {
@@ -146,11 +205,18 @@ fun StationSelector(
                 shape = RoundedCornerShape(8.dp)
             )
     ) {
-        Text(
-            modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
-            text = stationName,
-            style = MaterialTheme.typography.bodyMedium
-        )
+        Column(modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
+            Text(
+                modifier = Modifier.padding(top = 4.dp),
+                text = stationName,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
     }
 }
 
@@ -160,10 +226,33 @@ fun SearchScreenContentPreview() {
     TrackBuddyTheme {
         Surface {
             SearchScreenContent(
-                requiredStation = "",
-                optionalStation = "",
+                direction = Direction.ARRIVING,
+                requiredStation = "London Waterloo",
+                optionalStation = "Salisbury",
                 onRequiredPressed = {},
-                onOptionalPressed = {}
+                onOptionalPressed = {},
+                onSwapPressed = {},
+                onDepartingPressed = {},
+                onArrivingPressed = {}
+            )
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true, device = Devices.PIXEL_4, uiMode = UI_MODE_NIGHT_YES)
+fun SearchScreenContentNightPreview() {
+    TrackBuddyTheme {
+        Surface {
+            SearchScreenContent(
+                direction = Direction.DEPARTING,
+                requiredStation = "London Waterloo",
+                optionalStation = "Salisbury",
+                onRequiredPressed = {},
+                onOptionalPressed = {},
+                onSwapPressed = {},
+                onDepartingPressed = {},
+                onArrivingPressed = {}
             )
         }
     }
