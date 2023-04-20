@@ -45,7 +45,11 @@ class HuxleyRepositoryImpl @Inject constructor(
         departureStationCode: String,
         arrivalStationCode: String?
     ): Result<DepartureBoard> {
-        TODO("Not yet implemented")
+        return if (arrivalStationCode == null) {
+            safeApiCall { huxleyService.getDepartures(departureStationCode) }
+        } else {
+            safeApiCall { huxleyService.getDeparturesFiltered(departureStationCode, arrivalStationCode) }
+        }
     }
 
     override suspend fun getArrivalBoard(

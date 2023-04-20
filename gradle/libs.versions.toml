@@ -18,7 +18,7 @@ orbit = "4.6.1"
 immutable = "0.3.5"
 icons = "1.4.1"
 room = "2.5.1"
-ksp = "1.8.20-1.0.10"
+ksp = "1.8.20-1.0.11"
 moshi = "1.14.0"
 
 [libraries]

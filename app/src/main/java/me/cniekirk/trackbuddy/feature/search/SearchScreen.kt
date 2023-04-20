@@ -33,10 +33,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.UiMode
 import androidx.compose.ui.unit.dp
 import me.cniekirk.trackbuddy.R
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation
+import me.cniekirk.trackbuddy.navigation.Direction
 import me.cniekirk.trackbuddy.ui.components.TextRadioButton
 import me.cniekirk.trackbuddy.ui.theme.TrackBuddyTheme
 import org.orbitmvi.orbit.compose.collectAsState
@@ -48,7 +48,8 @@ fun SearchScreen(
     requiredStation: State<TrainStation?>,
     optionalStation: State<TrainStation?>,
     navigateToRequired: () -> Unit,
-    navigateToOptional: () -> Unit
+    navigateToOptional: () -> Unit,
+    navigateToResults: (TrainStation, TrainStation?, Direction) -> Unit
 ) {
     val state = viewModel.collectAsState().value
 
@@ -59,6 +60,13 @@ fun SearchScreen(
             }
             SearchEffect.RequiredPressed -> navigateToRequired()
             SearchEffect.OptionalPressed -> navigateToOptional()
+            is SearchEffect.DisplaySearchResults -> {
+                navigateToResults(
+                    sideEffect.requiredDestination,
+                    sideEffect.optionalDestination,
+                    sideEffect.direction
+                )
+            }
         }
     }
 
@@ -73,7 +81,8 @@ fun SearchScreen(
         onOptionalPressed = viewModel::onOptionalPressed,
         onSwapPressed = viewModel::onSwapPressed,
         onDepartingPressed = viewModel::onDepartingPressed,
-        onArrivingPressed = viewModel::onArrivingPressed
+        onArrivingPressed = viewModel::onArrivingPressed,
+        onSearchPressed = viewModel::onSearchPressed
     )
 
     LaunchedEffect(Unit) {
@@ -91,7 +100,8 @@ fun SearchScreenContent(
     onOptionalPressed: () -> Unit,
     onSwapPressed: () -> Unit,
     onDepartingPressed: () -> Unit,
-    onArrivingPressed: () -> Unit
+    onArrivingPressed: () -> Unit,
+    onSearchPressed: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         CenterAlignedTopAppBar(
@@ -109,7 +119,7 @@ fun SearchScreenContent(
         ) {
             TextRadioButton(
                 label = stringResource(id = R.string.departing_direction_label),
-                selected = direction == Direction.DEPARTING
+                selected = direction == Direction.DEPARTURES
             ) {
                 onDepartingPressed()
             }
@@ -118,19 +128,19 @@ fun SearchScreenContent(
 
             TextRadioButton(
                 label = stringResource(id = R.string.arriving_direction_label),
-                selected = direction == Direction.ARRIVING
+                selected = direction == Direction.ARRIVALS
             ) {
                 onArrivingPressed()
             }
         }
 
-        val requiredLabel = if (direction == Direction.DEPARTING) {
+        val requiredLabel = if (direction == Direction.DEPARTURES) {
             stringResource(id = R.string.departing_label)
         } else {
             stringResource(id = R.string.arriving_label)
         }
 
-        val optionalLabel = if (direction == Direction.DEPARTING) {
+        val optionalLabel = if (direction == Direction.DEPARTURES) {
             stringResource(id = R.string.arriving_label)
         } else {
             stringResource(id = R.string.coming_from_label)
@@ -182,7 +192,7 @@ fun SearchScreenContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 16.dp),
-            onClick = {  }
+            onClick = { onSearchPressed() }
         ) {
             Text(text = stringResource(id = R.string.search_button))
         }
@@ -226,14 +236,15 @@ fun SearchScreenContentPreview() {
     TrackBuddyTheme {
         Surface {
             SearchScreenContent(
-                direction = Direction.ARRIVING,
+                direction = Direction.ARRIVALS,
                 requiredStation = "London Waterloo",
                 optionalStation = "Salisbury",
                 onRequiredPressed = {},
                 onOptionalPressed = {},
                 onSwapPressed = {},
                 onDepartingPressed = {},
-                onArrivingPressed = {}
+                onArrivingPressed = {},
+                onSearchPressed = {}
             )
         }
     }
@@ -245,14 +256,15 @@ fun SearchScreenContentNightPreview() {
     TrackBuddyTheme {
         Surface {
             SearchScreenContent(
-                direction = Direction.DEPARTING,
+                direction = Direction.DEPARTURES,
                 requiredStation = "London Waterloo",
                 optionalStation = "Salisbury",
                 onRequiredPressed = {},
                 onOptionalPressed = {},
                 onSwapPressed = {},
                 onDepartingPressed = {},
-                onArrivingPressed = {}
+                onArrivingPressed = {},
+                onSearchPressed = {}
             )
         }
     }

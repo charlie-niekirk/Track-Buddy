@@ -27,6 +27,8 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation
 import me.cniekirk.trackbuddy.feature.search.SearchScreen
 import me.cniekirk.trackbuddy.feature.search.SearchViewModel
+import me.cniekirk.trackbuddy.feature.servicelist.ServiceListScreen
+import me.cniekirk.trackbuddy.feature.servicelist.ServiceListViewModel
 import me.cniekirk.trackbuddy.feature.stationselect.StationSelectScreen
 import me.cniekirk.trackbuddy.feature.stationselect.StationSelectViewModel
 
@@ -88,7 +90,7 @@ fun BottomNavigationNavHost(
                 route = BottomNavDestination.Search.route,
                 exitTransition = {
                     when (targetState.destination.route) {
-                        SecondaryDestination.StationSelect.route -> {
+                        SecondaryDestination.StationSelect.route, SecondaryDestination.ServiceList.route -> {
                             slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(300))
                         }
                         else -> null
@@ -96,7 +98,7 @@ fun BottomNavigationNavHost(
                 },
                 popEnterTransition = {
                     when (initialState.destination.route) {
-                        SecondaryDestination.StationSelect.route -> {
+                        SecondaryDestination.StationSelect.route, SecondaryDestination.ServiceList.route -> {
                             slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(300))
                         }
                         else -> null
@@ -122,6 +124,13 @@ fun BottomNavigationNavHost(
                     },
                     navigateToOptional = {
                         navController.navigateToStationSelect(false)
+                    },
+                    navigateToResults = { required, optional, direction ->
+                        navController.navigateToServiceList(
+                            required.code,
+                            optional?.code,
+                            direction
+                        )
                     }
                 )
             }
@@ -147,6 +156,17 @@ fun BottomNavigationNavHost(
                         navController.popBackStack()
                     }
                 )
+            }
+            composable(
+                route = SecondaryDestination.ServiceList.route,
+                arguments = listOf(navArgument(END_ARG_ID) { nullable = true }),
+                enterTransition = { slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(300)) },
+                popExitTransition = { slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(300)) }
+            ) {
+                val viewModel = hiltViewModel<ServiceListViewModel>()
+                ServiceListScreen(viewModel = viewModel) {
+                    navController.popBackStack()
+                }
             }
         }
     }

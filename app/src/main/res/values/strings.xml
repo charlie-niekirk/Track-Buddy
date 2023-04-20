@@ -12,4 +12,8 @@
     <string name="arriving_label">Arriving at</string>
     <string name="departing_label">Departing from</string>
     <string name="search_button">Search</string>
+    <string name="generic_error">Something went wrong!</string>
+    <string name="departures_prefix">"Departing "</string>
+    <string name="arrivals_prefix">"Arriving at "</string>
+    <string name="back_button">Back</string>
 </resources>

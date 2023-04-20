@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation
+import me.cniekirk.trackbuddy.navigation.Direction
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -48,13 +49,25 @@ class SearchViewModel @Inject constructor(
 
     fun onDepartingPressed() = intent {
         reduce {
-            state.copy(direction = Direction.DEPARTING)
+            state.copy(direction = Direction.DEPARTURES)
         }
     }
 
     fun onArrivingPressed() = intent {
         reduce {
-            state.copy(direction = Direction.ARRIVING)
+            state.copy(direction = Direction.ARRIVALS)
+        }
+    }
+
+    fun onSearchPressed() = intent {
+        state.requiredDestination?.let { required ->
+            postSideEffect(
+                SearchEffect.DisplaySearchResults(
+                    required,
+                    state.optionalDestination,
+                    state.direction
+                )
+            )
         }
     }
 }
