@@ -16,4 +16,7 @@
     <string name="departures_prefix">"Departing "</string>
     <string name="arrivals_prefix">"Arriving at "</string>
     <string name="back_button">Back</string>
+    <string name="cancelled_label">Cancelled</string>
+    <string name="delayed_no_time_label">Delayed</string>
+    <string name="delayed_with_time_label">%1$s %2$s</string>
 </resources>

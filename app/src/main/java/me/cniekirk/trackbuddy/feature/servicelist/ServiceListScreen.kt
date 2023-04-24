@@ -25,10 +25,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import me.cniekirk.trackbuddy.R
 import me.cniekirk.trackbuddy.data.model.TrainService
+import me.cniekirk.trackbuddy.domain.model.DepartureTime
+import me.cniekirk.trackbuddy.domain.model.Service
 import me.cniekirk.trackbuddy.navigation.Direction
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -67,7 +74,7 @@ fun ServiceListScreenContent(
     direction: Direction,
     requiredStation: String,
     optionalStation: String?,
-    services: ImmutableList<TrainService>?,
+    services: ImmutableList<Service>?,
     onBackPressed: () -> Unit
 ) {
     Column(
@@ -106,7 +113,7 @@ fun ServiceListScreenContent(
         } else {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(services) { service ->
-                    ServiceItem(trainService = service)
+                    ServiceItem(service = service)
                     Divider()
                 }
             }
@@ -115,16 +122,42 @@ fun ServiceListScreenContent(
 }
 
 @Composable
-fun ServiceItem(trainService: TrainService) {
+fun ServiceItem(service: Service) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp)) {
             Text(
-                text = trainService.destination?.lastOrNull()?.locationName ?: "",
+                text = service.destination,
                 style = MaterialTheme.typography.bodyMedium
             )
+
+            val timeText = buildAnnotatedString {
+                when (service.departureTime) {
+                    is DepartureTime.Cancelled -> {
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.error)) {
+                            append(stringResource(id = R.string.cancelled_label))
+                        }
+                    }
+                    is DepartureTime.Delayed -> {
+                        append(stringResource(id = R.string.delayed_no_time_label))
+                    }
+                    is DepartureTime.DelayedWithEstimate -> {
+                        withStyle(SpanStyle(textDecoration = TextDecoration.LineThrough)) {
+                            append(service.departureTime.scheduledTime)
+                        }
+                        append(" ")
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.error)) {
+                            append(service.departureTime.estimatedTime)
+                        }
+                    }
+                    is DepartureTime.OnTime -> {
+                        append(service.departureTime.scheduledTime)
+                    }
+                }
+            }
+
             Text(
                 modifier = Modifier.padding(top = 2.dp),
-                text = trainService.std ?: "?",
+                text = timeText,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
