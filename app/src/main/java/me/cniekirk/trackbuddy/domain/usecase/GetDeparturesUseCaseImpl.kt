@@ -3,11 +3,13 @@ package me.cniekirk.trackbuddy.domain.usecase
 import kotlinx.collections.immutable.toImmutableList
 import me.cniekirk.trackbuddy.data.model.TrainService
 import me.cniekirk.trackbuddy.data.util.Result
+import me.cniekirk.trackbuddy.domain.model.DepartureTime
 import me.cniekirk.trackbuddy.domain.model.Service
 import me.cniekirk.trackbuddy.domain.model.ServiceList
 import me.cniekirk.trackbuddy.domain.repository.HuxleyRepository
 import me.cniekirk.trackbuddy.navigation.Direction
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class GetDeparturesUseCaseImpl @Inject constructor(
@@ -38,12 +40,31 @@ class GetDeparturesUseCaseImpl @Inject constructor(
         val origin = this.origin?.firstOrNull()?.locationName
         val destination = this.destination?.firstOrNull()?.locationName
         val operator = this.operator
-//        val scheduled = LocalDateTime
-//            .parse(this.std)
-//            .toLocalTime()
-//            .format(
-//                TimeFormatter
-//            )
+
+        val formatter = DateTimeFormatter.ofPattern("HH:mm")
+        val scheduled = LocalDateTime
+            .parse(this.std)
+            .toLocalTime()
+        val estimated = LocalDateTime
+            .parse(this.etd)
+            .toLocalTime()
+
+        // 3 means delayed with no time estimate
+        val departureTime = if (atdSpecified == true) {
+            DepartureTime.Departed
+        } else if (isCancelled == true) {
+            DepartureTime.Cancelled("Reason code: ${cancelReason?.value}")
+        } else if (departureType == 3) {
+            DepartureTime.Delayed("Reason code: ${delayReason?.value}")
+        } else if (estimated.isAfter(scheduled)) {
+            DepartureTime.DelayedWithEstimate(
+                scheduledTime = scheduled.format(formatter),
+                estimatedTime = estimated.format(formatter),
+                delayReason = "Reason code: ${delayReason?.value}"
+            )
+        } else {
+            DepartureTime.OnTime(scheduled.format(formatter))
+        }
 
         return if (origin.isNullOrEmpty() || destination.isNullOrEmpty() || operator.isNullOrEmpty()) {
             null
@@ -52,8 +73,16 @@ class GetDeparturesUseCaseImpl @Inject constructor(
                 origin = origin,
                 destination = destination,
                 operator = operator,
-                departureTime =
+                departureTime = departureTime,
+                platform = platform ?: ""
             )
         }
+    }
+
+    private fun String.parseTime(): String {
+        return LocalDateTime
+            .parse(this)
+            .toLocalTime()
+            .format(DateTimeFormatter.ofPattern("HH:mm"))
     }
 }

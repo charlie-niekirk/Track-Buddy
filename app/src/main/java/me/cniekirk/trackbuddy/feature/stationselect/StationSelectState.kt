@@ -5,7 +5,8 @@ import kotlinx.collections.immutable.persistentListOf
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation
 
 data class StationSelectState(
-    val stations: ImmutableList<TrainStation> = persistentListOf()
+    val stations: ImmutableList<TrainStation> = persistentListOf(),
+    val searchQuery: String = ""
 )
 
 sealed class StationSelectEffect {

@@ -38,7 +38,7 @@ class HuxleyRepositoryImpl @Inject constructor(
     }
 
     override suspend fun queryStations(query: String): Result<List<TrainStation>> {
-        TODO("Not yet implemented")
+        return Result.Success(trainStationDao.findByNameOrCode(query))
     }
 
     override suspend fun getDepartureBoard(

@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +49,8 @@ fun StationSelectScreen(
 
     StationSelectScreenContent(
         stations = state.stations,
+        searchQuery = state.searchQuery,
+        onQueryChanged = viewModel::onQueryChanged,
         onStationSelected = viewModel::stationSelected
     )
 }
@@ -56,6 +59,8 @@ fun StationSelectScreen(
 @Composable
 fun StationSelectScreenContent(
     stations: ImmutableList<TrainStation>,
+    searchQuery: String,
+    onQueryChanged: (String) -> Unit,
     onStationSelected: (TrainStation) -> Unit
 ) {
     Column(
@@ -69,6 +74,17 @@ fun StationSelectScreenContent(
                     style = MaterialTheme.typography.titleMedium
                 )
             }
+        )
+
+        TextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp, horizontal = 16.dp),
+            value = searchQuery,
+            label = {
+                Text(text = stringResource(id = R.string.station_query_label))
+            },
+            onValueChange = { onQueryChanged(it) }
         )
 
         if (stations.isEmpty()) {
@@ -112,7 +128,12 @@ fun StationItem(
 fun StationSelectLoadingPreview() {
     TrackBuddyTheme {
         Surface {
-            StationSelectScreenContent(stations = persistentListOf(), onStationSelected = {})
+            StationSelectScreenContent(
+                stations = persistentListOf(),
+                searchQuery = "",
+                onQueryChanged = {},
+                onStationSelected = {}
+            )
         }
     }
 }
@@ -134,6 +155,8 @@ fun StationSelectResultsPreview() {
                     TrainStation(name = "London Waterloo", code = "WAT"),
                     TrainStation(name = "London Waterloo", code = "WAT")
                 ),
+                searchQuery = "London Pa",
+                onQueryChanged = {},
                 onStationSelected = {}
             )
         }

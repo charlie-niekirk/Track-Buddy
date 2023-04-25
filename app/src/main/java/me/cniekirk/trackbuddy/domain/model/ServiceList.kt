@@ -7,6 +7,8 @@ import me.cniekirk.trackbuddy.navigation.Direction
 
 sealed class DepartureTime {
 
+    object Departed : DepartureTime()
+
     data class OnTime(val scheduledTime: String) : DepartureTime()
 
     data class DelayedWithEstimate(
@@ -24,7 +26,8 @@ data class Service(
     val origin: String,
     val destination: String,
     val operator: String,
-    val departureTime: DepartureTime
+    val departureTime: DepartureTime,
+    val platform: String
 )
 
 data class ServiceList(

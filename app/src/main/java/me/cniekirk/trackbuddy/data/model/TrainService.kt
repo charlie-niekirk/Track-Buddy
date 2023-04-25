@@ -28,7 +28,7 @@ data class TrainService(
     @Json(name = "atdSpecified")
     val atdSpecified: Boolean?,
     @Json(name = "cancelReason")
-    val cancelReason: Any?,
+    val cancelReason: Reason?,
     @Json(name = "category")
     val category: String?,
     @Json(name = "currentDestinations")
@@ -36,7 +36,7 @@ data class TrainService(
     @Json(name = "currentOrigins")
     val currentOrigins: Any?,
     @Json(name = "delayReason")
-    val delayReason: Any?,
+    val delayReason: Reason?,
     @Json(name = "departureSource")
     val departureSource: String?,
     @Json(name = "departureSourceInstance")

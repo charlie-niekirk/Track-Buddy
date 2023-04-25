@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -123,8 +124,18 @@ fun ServiceListScreenContent(
 
 @Composable
 fun ServiceItem(service: Service) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .graphicsLayer {
+                if (service.departureTime is DepartureTime.Departed) {
+                    alpha = 0.5f
+                }
+            },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column {
             Text(
                 text = service.destination,
                 style = MaterialTheme.typography.bodyMedium
@@ -138,7 +149,9 @@ fun ServiceItem(service: Service) {
                         }
                     }
                     is DepartureTime.Delayed -> {
-                        append(stringResource(id = R.string.delayed_no_time_label))
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.error)) {
+                            append(stringResource(id = R.string.delayed_no_time_label))
+                        }
                     }
                     is DepartureTime.DelayedWithEstimate -> {
                         withStyle(SpanStyle(textDecoration = TextDecoration.LineThrough)) {
@@ -152,6 +165,10 @@ fun ServiceItem(service: Service) {
                     is DepartureTime.OnTime -> {
                         append(service.departureTime.scheduledTime)
                     }
+
+                    DepartureTime.Departed -> {
+                        append(stringResource(id = R.string.departed_label))
+                    }
                 }
             }
 
@@ -160,6 +177,13 @@ fun ServiceItem(service: Service) {
                 text = timeText,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        if (service.platform.isNotEmpty()) {
+            Text(
+                text = stringResource(id = R.string.platform_format_label, service.platform),
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
