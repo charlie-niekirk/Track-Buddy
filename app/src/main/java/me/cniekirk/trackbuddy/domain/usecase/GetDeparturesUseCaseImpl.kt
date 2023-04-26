@@ -8,6 +8,7 @@ import me.cniekirk.trackbuddy.domain.model.Service
 import me.cniekirk.trackbuddy.domain.model.ServiceList
 import me.cniekirk.trackbuddy.domain.repository.HuxleyRepository
 import me.cniekirk.trackbuddy.navigation.Direction
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class GetDeparturesUseCaseImpl @Inject constructor(
                 Result.Success(
                     ServiceList(
                         direction = Direction.DEPARTURES,
-                        requiredStation = response.data.locationName ?: "",
+                        requiredStation = response.data.crs ?: "",
                         optionalStation = optionalCode ?: "",
                         serviceList = list.mapNotNull { it?.toDomainService() }.toImmutableList()
                     )
@@ -51,15 +52,19 @@ class GetDeparturesUseCaseImpl @Inject constructor(
 
         // 3 means delayed with no time estimate
         val departureTime = if (atdSpecified == true) {
-            DepartureTime.Departed
+            val actual = LocalDateTime
+                .parse(this.atd)
+                .toLocalTime()
+            DepartureTime.Departed(departedTime = actual.format(formatter))
         } else if (isCancelled == true) {
             DepartureTime.Cancelled("Reason code: ${cancelReason?.value}")
         } else if (departureType == 3) {
             DepartureTime.Delayed("Reason code: ${delayReason?.value}")
-        } else if (estimated.isAfter(scheduled)) {
+        } else if (estimated.isAfter(scheduled) && estimated.minute != scheduled.minute) {
             DepartureTime.DelayedWithEstimate(
                 scheduledTime = scheduled.format(formatter),
                 estimatedTime = estimated.format(formatter),
+                minutesLate = Duration.between(scheduled, estimated).toMinutes().toInt(),
                 delayReason = "Reason code: ${delayReason?.value}"
             )
         } else {

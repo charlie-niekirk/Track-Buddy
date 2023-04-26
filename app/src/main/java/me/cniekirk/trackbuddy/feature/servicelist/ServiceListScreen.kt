@@ -161,13 +161,20 @@ fun ServiceItem(service: Service) {
                         withStyle(SpanStyle(color = MaterialTheme.colorScheme.error)) {
                             append(service.departureTime.estimatedTime)
                         }
+                        append('\n')
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.error)) {
+                            append(stringResource(id = R.string.minutes_late_format, service.departureTime.minutesLate))
+                        }
                     }
                     is DepartureTime.OnTime -> {
                         append(service.departureTime.scheduledTime)
+                        append('\n')
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                            append(stringResource(id = R.string.on_time_label))
+                        }
                     }
-
-                    DepartureTime.Departed -> {
-                        append(stringResource(id = R.string.departed_label))
+                    is DepartureTime.Departed -> {
+                        append(stringResource(id = R.string.departed_format_label, service.departureTime.departedTime))
                     }
                 }
             }
