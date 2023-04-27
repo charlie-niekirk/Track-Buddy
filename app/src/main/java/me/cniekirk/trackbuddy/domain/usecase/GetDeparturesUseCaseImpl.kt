@@ -1,5 +1,6 @@
 package me.cniekirk.trackbuddy.domain.usecase
 
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import me.cniekirk.trackbuddy.data.model.TrainService
 import me.cniekirk.trackbuddy.data.util.Result
@@ -25,11 +26,13 @@ class GetDeparturesUseCaseImpl @Inject constructor(
             }
             is Result.Success -> {
                 val list = response.data.trainServices ?: listOf()
+                val messages = response.data.nrccMessages?.mapNotNull { it?.xhtmlMessage } ?: persistentListOf()
                 Result.Success(
                     ServiceList(
                         direction = Direction.DEPARTURES,
                         requiredStation = response.data.crs ?: "",
                         optionalStation = optionalCode ?: "",
+                        stationMessages = messages.toImmutableList(),
                         serviceList = list.mapNotNull { it?.toDomainService() }.toImmutableList()
                     )
                 )

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import me.cniekirk.trackbuddy.R
 import me.cniekirk.trackbuddy.data.util.Result
+import me.cniekirk.trackbuddy.domain.model.Service
 import me.cniekirk.trackbuddy.domain.model.ServiceList
 import me.cniekirk.trackbuddy.domain.repository.HuxleyRepository
 import me.cniekirk.trackbuddy.domain.usecase.GetDeparturesUseCase
@@ -49,6 +50,10 @@ class ServiceListViewModel @Inject constructor(
 //                huxleyRepository.getArrivalBoard(start, optional)
             }
         }
+    }
+
+    fun onServicePressed(service: Service) = intent {
+
     }
 
     fun backPressed() = intent { postSideEffect(ServiceListEffect.NavigateBack) }

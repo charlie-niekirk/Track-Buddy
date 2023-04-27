@@ -1,16 +1,24 @@
 package me.cniekirk.trackbuddy.feature.servicelist
 
+import android.text.SpannedString
 import android.widget.Toast
+import android.text.Annotation
+import android.text.Html
+import android.text.style.URLSpan
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -25,21 +33,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.core.text.getSpans
 import kotlinx.collections.immutable.ImmutableList
 import me.cniekirk.trackbuddy.R
-import me.cniekirk.trackbuddy.data.model.TrainService
 import me.cniekirk.trackbuddy.domain.model.DepartureTime
 import me.cniekirk.trackbuddy.domain.model.Service
 import me.cniekirk.trackbuddy.navigation.Direction
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import timber.log.Timber
 
 @Composable
 fun ServiceListScreen(
@@ -64,8 +74,10 @@ fun ServiceListScreen(
         direction = state.serviceList.direction,
         requiredStation = state.serviceList.requiredStation,
         optionalStation = state.serviceList.optionalStation,
+        stationMessages = state.serviceList.stationMessages,
         services = state.serviceList.serviceList,
-        onBackPressed = viewModel::backPressed
+        onBackPressed = viewModel::backPressed,
+        onServicePressed = viewModel::onServicePressed
     )
 }
 
@@ -75,8 +87,10 @@ fun ServiceListScreenContent(
     direction: Direction,
     requiredStation: String,
     optionalStation: String?,
+    stationMessages: ImmutableList<String>,
     services: ImmutableList<Service>?,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    onServicePressed: (Service) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -107,6 +121,16 @@ fun ServiceListScreenContent(
             }
         )
 
+        if (stationMessages.isNotEmpty()) {
+            stationMessages.forEach { message ->
+                StationMessage(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    message = message
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+
         if (services == null) {
             Spacer(modifier = Modifier.weight(1f))
             CircularProgressIndicator()
@@ -114,7 +138,9 @@ fun ServiceListScreenContent(
         } else {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(services) { service ->
-                    ServiceItem(service = service)
+                    ServiceItem(service = service) {
+                        onServicePressed(it)
+                    }
                     Divider()
                 }
             }
@@ -123,11 +149,69 @@ fun ServiceListScreenContent(
 }
 
 @Composable
-fun ServiceItem(service: Service) {
+fun annotatedStringResource(
+    message: String,
+    spanStyles: (URLSpan) -> SpanStyle? = { null }
+): AnnotatedString {
+    val spannedString = Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT)
+    val resultBuilder = AnnotatedString.Builder()
+    resultBuilder.append(spannedString.toString())
+    spannedString.getSpans<URLSpan>(0, spannedString.length).forEach { urlSpan ->
+        val spanStart = spannedString.getSpanStart(urlSpan)
+        val spanEnd = spannedString.getSpanEnd(urlSpan)
+        resultBuilder.addStringAnnotation(
+            tag = "url",
+            annotation = urlSpan.url,
+            start = spanStart,
+            end = spanEnd
+        )
+        spanStyles(urlSpan)?.let { resultBuilder.addStyle(it, spanStart, spanEnd) }
+    }
+    return resultBuilder.toAnnotatedString()
+}
+
+@Composable
+fun StationMessage(
+    modifier: Modifier = Modifier,
+    message: String
+) {
+    val annotatedMessage = annotatedStringResource(
+        message = message,
+        spanStyles = { _ -> SpanStyle(textDecoration = TextDecoration.Underline) }
+    )
+    val uriHandler = LocalUriHandler.current
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(
+                color = MaterialTheme.colorScheme.errorContainer,
+                shape = RoundedCornerShape(8.dp)
+            )
+    ) {
+        ClickableText(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            text = annotatedMessage,
+            style = MaterialTheme.typography.bodySmall,
+            onClick = { offset ->
+                annotatedMessage.getStringAnnotations(tag = "url", start = offset, end = offset)
+                    .firstOrNull()
+                    ?.let { uriHandler.openUri(it.item) }
+            }
+        )
+    }
+}
+
+@Composable
+fun ServiceItem(
+    service: Service,
+    onServicePressed: (Service) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onServicePressed(service) }
             .graphicsLayer {
                 if (service.departureTime is DepartureTime.Departed) {
                     alpha = 0.5f

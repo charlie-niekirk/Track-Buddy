@@ -35,5 +35,6 @@ data class ServiceList(
     val direction: Direction = Direction.DEPARTURES,
     val requiredStation: String = "",
     val optionalStation: String? = null,
+    val stationMessages: ImmutableList<String> = persistentListOf(),
     val serviceList: ImmutableList<Service>? = null
 )
