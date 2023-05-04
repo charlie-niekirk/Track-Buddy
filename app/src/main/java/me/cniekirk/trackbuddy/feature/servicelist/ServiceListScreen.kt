@@ -8,7 +8,9 @@ import android.text.style.URLSpan
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -136,7 +138,10 @@ fun ServiceListScreenContent(
             CircularProgressIndicator()
             Spacer(modifier = Modifier.weight(1f))
         } else {
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+            ) {
                 items(services) { service ->
                     ServiceItem(service = service) {
                         onServicePressed(it)
@@ -210,7 +215,6 @@ fun ServiceItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable { onServicePressed(service) }
             .graphicsLayer {
                 if (service.departureTime is DepartureTime.Departed) {
