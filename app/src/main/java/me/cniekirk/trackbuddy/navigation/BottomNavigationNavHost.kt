@@ -90,17 +90,13 @@ fun BottomNavigationNavHost(
                 route = BottomNavDestination.Search.route,
                 exitTransition = {
                     when (targetState.destination.route) {
-                        SecondaryDestination.StationSelect.route, SecondaryDestination.ServiceList.route -> {
-                            slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(300))
-                        }
+                        SecondaryDestination.StationSelect.route, SecondaryDestination.ServiceList.route -> exitAnimation()
                         else -> null
                     }
                 },
                 popEnterTransition = {
                     when (initialState.destination.route) {
-                        SecondaryDestination.StationSelect.route, SecondaryDestination.ServiceList.route -> {
-                            slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(300))
-                        }
+                        SecondaryDestination.StationSelect.route, SecondaryDestination.ServiceList.route -> popEnterAnimation()
                         else -> null
                     }
                 }
@@ -137,8 +133,8 @@ fun BottomNavigationNavHost(
             composable(
                 route = SecondaryDestination.StationSelect.route,
                 arguments = listOf(navArgument("isRequired") { type = NavType.BoolType }),
-                enterTransition = { slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(300)) },
-                popExitTransition = { slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(300)) }
+                enterTransition = { enterAnimation() },
+                popExitTransition = { popExitAnimation() }
             ) {
                 val viewModel = hiltViewModel<StationSelectViewModel>()
                 StationSelectScreen(
@@ -160,8 +156,8 @@ fun BottomNavigationNavHost(
             composable(
                 route = SecondaryDestination.ServiceList.route,
                 arguments = listOf(navArgument(END_ARG_ID) { nullable = true }),
-                enterTransition = { slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(300)) },
-                popExitTransition = { slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(300)) }
+                enterTransition = { enterAnimation() },
+                popExitTransition = { popExitAnimation() }
             ) {
                 val viewModel = hiltViewModel<ServiceListViewModel>()
                 ServiceListScreen(viewModel = viewModel) {

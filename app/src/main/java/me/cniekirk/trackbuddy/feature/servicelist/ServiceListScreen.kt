@@ -28,6 +28,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,13 +43,16 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.getSpans
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import me.cniekirk.trackbuddy.R
 import me.cniekirk.trackbuddy.domain.model.DepartureTime
 import me.cniekirk.trackbuddy.domain.model.Service
 import me.cniekirk.trackbuddy.navigation.Direction
+import me.cniekirk.trackbuddy.ui.theme.TrackBuddyTheme
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import timber.log.Timber
@@ -279,6 +283,24 @@ fun ServiceItem(
             Text(
                 text = stringResource(id = R.string.platform_format_label, service.platform),
                 style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ServiceListScreenContentPreview() {
+    TrackBuddyTheme {
+        Surface {
+            ServiceListScreenContent(
+                direction = Direction.DEPARTURES,
+                requiredStation = "ABD",
+                optionalStation = "",
+                services = persistentListOf(),
+                onBackPressed = {},
+                onServicePressed = {},
+                stationMessages = persistentListOf()
             )
         }
     }
