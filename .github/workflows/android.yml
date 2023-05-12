@@ -2,9 +2,8 @@ name: Android CI
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -12,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Get Tag
+      id: var
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
     - name: set up JDK 17
       uses: actions/setup-java@v3
       with:
@@ -43,14 +45,23 @@ jobs:
       uses: actions/download-artifact@v1
       with:
          name: aab
+    - name: Build Changelog
+      id: changelog
+      uses: ardalanamini/auto-changelog@v3
+      with:
+        mention-authors: false
+        mention-new-contributors: false
+        include-compare: false
+        semver: false
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
-        tag_name: Tag Name
-        release_name: Release Name
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: ${{ steps.changelog.outputs.changelog }} &#x20;
     - name: Upload Release AAB
       id: upload_release_asset
       uses: actions/upload-release-asset@v1.0.1
