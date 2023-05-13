@@ -10,6 +10,12 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.ui.unit.IntOffset
 import androidx.core.view.animation.PathInterpolatorCompat
 
+private const val OFF_SCREEN_ALPHA = 0f
+private const val SCREEN_WIDTH_ANIM_DIVISOR = 5
+private const val EMPHASISED_DURATION = 500
+private const val POP_DURATION = 300
+private const val ANIM_DELAY = 0
+
 // Default activity animation interpolator: fast_out_v_slow_in.xml
 private val path = Path().apply {
     moveTo(0f, 0f)
@@ -21,37 +27,37 @@ private val easing = Easing {
     PathInterpolatorCompat.create(path).getInterpolation(it)
 }
 
-private val emphasisedIntSpec = tween<IntOffset>(500, 0, easing)
-private val emphasisedFloatSpec = tween<Float>(500, 0, easing)
+private val emphasisedIntSpec = tween<IntOffset>(EMPHASISED_DURATION, ANIM_DELAY, easing)
+private val emphasisedFloatSpec = tween<Float>(EMPHASISED_DURATION, ANIM_DELAY, easing)
 
-private val emphasisedPopIntSpec = tween<IntOffset>(300, 0, easing)
-private val emphasisedPopFloatSpec = tween<Float>(300, 0, easing)
+private val emphasisedPopIntSpec = tween<IntOffset>(POP_DURATION, ANIM_DELAY, easing)
+private val emphasisedPopFloatSpec = tween<Float>(POP_DURATION, ANIM_DELAY, easing)
 
 
 val enterAnimation = {
     slideInHorizontally(
         animationSpec = emphasisedIntSpec,
-        initialOffsetX = { it / 5 }
-    ) + fadeIn(emphasisedFloatSpec, 0f)
+        initialOffsetX = { it / SCREEN_WIDTH_ANIM_DIVISOR }
+    ) + fadeIn(emphasisedFloatSpec, OFF_SCREEN_ALPHA)
 }
 
 val exitAnimation = {
     slideOutHorizontally(
         animationSpec = emphasisedIntSpec,
-        targetOffsetX = { -(it / 5) }
-    ) + fadeOut(emphasisedFloatSpec, 0f)
+        targetOffsetX = { -(it / SCREEN_WIDTH_ANIM_DIVISOR) }
+    ) + fadeOut(emphasisedFloatSpec, OFF_SCREEN_ALPHA)
 }
 
 val popEnterAnimation = {
     slideInHorizontally(
         animationSpec = emphasisedPopIntSpec,
-        initialOffsetX = { -(it / 5) }
-    ) + fadeIn(emphasisedPopFloatSpec, 0f)
+        initialOffsetX = { -(it / SCREEN_WIDTH_ANIM_DIVISOR) }
+    ) + fadeIn(emphasisedPopFloatSpec, OFF_SCREEN_ALPHA)
 }
 
 val popExitAnimation = {
     slideOutHorizontally(
         animationSpec = emphasisedPopIntSpec,
-        targetOffsetX = { it / 5 }
-    ) + fadeOut(emphasisedPopFloatSpec, 0f)
+        targetOffsetX = { it / SCREEN_WIDTH_ANIM_DIVISOR }
+    ) + fadeOut(emphasisedPopFloatSpec, OFF_SCREEN_ALPHA)
 }

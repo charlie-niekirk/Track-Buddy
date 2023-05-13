@@ -37,13 +37,15 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onSwapPressed() = intent {
-        reduce {
-            val newReq = state.optionalDestination
-            val newOpt = state.requiredDestination
-            state.copy(
-                requiredDestination = newReq,
-                optionalDestination = newOpt
-            )
+        if (state.requiredDestination != null  || state.optionalDestination != null) {
+            reduce {
+                val newReq = state.optionalDestination
+                val newOpt = state.requiredDestination
+                state.copy(
+                    requiredDestination = newReq,
+                    optionalDestination = newOpt
+                )
+            }
         }
     }
 
