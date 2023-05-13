@@ -142,6 +142,39 @@ class SearchViewModelTest {
         }
     }
 
+    @Test
+    fun `when onSearchPressed intent invoked with null requiredStation then verify no side effect posted`() = runTest {
+        val underTest = searchViewModel.test(SearchState())
+
+        underTest.testIntent { onSearchPressed() }
+
+        underTest.assert(SearchState()) {
+            postedSideEffects()
+        }
+    }
+
+    @Test
+    fun `when onSearchPressed intent invoked then verify DisplaySearchResults effect posted`() = runTest {
+        val underTest = searchViewModel.test(SearchState())
+
+        underTest.testIntent { setStations(departureStation, null) }
+        underTest.testIntent { onSearchPressed() }
+
+        underTest.assert(SearchState()) {
+            states(
+                { copy(requiredDestination = departureStation) }
+            )
+
+            postedSideEffects(
+                SearchEffect.DisplaySearchResults(
+                    departureStation,
+                    null,
+                    Direction.DEPARTURES
+                )
+            )
+        }
+    }
+
     companion object {
         val departureStation = TrainStation(
             0,

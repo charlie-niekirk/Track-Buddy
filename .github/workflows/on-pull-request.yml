@@ -1,7 +1,7 @@
 name: PR Workflow - run tests
 on:
   pull_request:
-    types: opened
+    types: [opened, edited]
     branches:
       - main
 jobs:
@@ -18,10 +18,10 @@ jobs:
           cache: gradle
       - name: Give gradlew permissions
         run: chmod +x gradlew
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
       - name: Run unit tests with Gradle
         run: ./gradlew testDebugUnitTest --stacktrace
-      - name: Unit tests results
-        uses: actions/upload-artifact@v1
-        with:
-          name: unit-tests-results
-          path: app/build/reports/tests/testDebugUnitTest/index.html
+      - name: Android Test Report
+        uses: asadmansr/android-test-report-action@v1.2.0
+        if: ${{ always() }}
