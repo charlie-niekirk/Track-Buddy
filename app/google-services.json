@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "844510818130",
+    "project_id": "track-buddy-116e0",
+    "storage_bucket": "track-buddy-116e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:844510818130:android:8d0540ee2882c840f1948b",
+        "android_client_info": {
+          "package_name": "me.cniekirk.trackbuddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "844510818130-86ta5ag0pbse75apl4jid8c86ihhqkr6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARL3GBNFKQNIe1Xoc6g0gVUSBTjDSMwNc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "844510818130-86ta5ag0pbse75apl4jid8c86ihhqkr6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
