@@ -2,8 +2,11 @@ package me.cniekirk.trackbuddy.feature.search
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation
+import me.cniekirk.trackbuddy.domain.repository.AnalyticsRepository
+import me.cniekirk.trackbuddy.domain.repository.PreferencesRepository
 import me.cniekirk.trackbuddy.navigation.Direction
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -14,10 +17,24 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val preferencesRepository: PreferencesRepository,
+    private val analyticsRepository: AnalyticsRepository
 ) : ViewModel(), ContainerHost<SearchState, SearchEffect> {
 
-    override val container = container<SearchState, SearchEffect>(SearchState())
+    override val container = container<SearchState, SearchEffect>(SearchState()) {
+        checkFirstRun()
+    }
+
+    private fun checkFirstRun() = intent {
+        if (!preferencesRepository.getIsNormalLaunch()) {
+            reduce {
+                state.copy(openAnalyticsDialog = true)
+            }
+        } else {
+            analyticsRepository.logScreen("search_screen", "SearchScreen")
+        }
+    }
 
     fun setStations(requiredStation: TrainStation?, optionalStation: TrainStation?) = intent {
         reduce {
@@ -71,5 +88,15 @@ class SearchViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    fun onDialogDismissed(analyticsEnabled: Boolean, crashlyticsEnabled: Boolean) = intent {
+        reduce {
+            state.copy(openAnalyticsDialog = false)
+        }
+        // Shown dialog, don't show again
+        preferencesRepository.setIsNormalLaunch(true)
+        preferencesRepository.setIsAnalyticsEnabled(analyticsEnabled)
+        preferencesRepository.setIsCrashlyticsEnabled(crashlyticsEnabled)
     }
 }

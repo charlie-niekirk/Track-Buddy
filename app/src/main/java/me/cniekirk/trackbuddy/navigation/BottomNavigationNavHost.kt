@@ -1,11 +1,7 @@
 package me.cniekirk.trackbuddy.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -19,14 +15,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation
 import me.cniekirk.trackbuddy.feature.search.SearchScreen
 import me.cniekirk.trackbuddy.feature.search.SearchViewModel
+import me.cniekirk.trackbuddy.feature.servicedetail.ServiceDetailsScreen
+import me.cniekirk.trackbuddy.feature.servicedetail.ServiceDetailsViewModel
 import me.cniekirk.trackbuddy.feature.servicelist.ServiceListScreen
 import me.cniekirk.trackbuddy.feature.servicelist.ServiceListViewModel
 import me.cniekirk.trackbuddy.feature.stationselect.StationSelectScreen
@@ -39,10 +37,9 @@ private val items = listOf(
     BottomNavDestination.Settings
 )
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNavigationNavHost(
-    navController: NavHostController = rememberAnimatedNavController(),
+    navController: NavHostController = rememberNavController(),
     startDestination: String = BottomNavDestination.Search.route
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
@@ -80,7 +77,7 @@ fun BottomNavigationNavHost(
             }
         }
     ) { paddingValues ->
-        AnimatedNavHost(
+        NavHost(
             navController = navController,
             startDestination = startDestination,
             modifier = Modifier.padding(paddingValues)
@@ -157,10 +154,27 @@ fun BottomNavigationNavHost(
                 route = SecondaryDestination.ServiceList.route,
                 arguments = listOf(navArgument(END_ARG_ID) { nullable = true }),
                 enterTransition = { enterAnimation() },
+                exitTransition = { exitAnimation() },
+                popEnterTransition = { popEnterAnimation() },
                 popExitTransition = { popExitAnimation() }
             ) {
                 val viewModel = hiltViewModel<ServiceListViewModel>()
-                ServiceListScreen(viewModel = viewModel) {
+                ServiceListScreen(
+                    viewModel = viewModel,
+                    navigateBack = { navController.popBackStack() },
+                    showDetails = { rid, serviceId, startCrs, endCrs ->
+                        navController.navigateToServiceDetails(rid, serviceId, startCrs, endCrs)
+                    }
+                )
+            }
+            composable(
+                route = SecondaryDestination.ServiceDetails.route,
+                arguments = listOf(navArgument(END_ARG_ID) { defaultValue = "" }),
+                enterTransition = { enterAnimation() },
+                popExitTransition = { popExitAnimation() }
+            ) {
+                val viewModel = hiltViewModel<ServiceDetailsViewModel>()
+                ServiceDetailsScreen(viewModel = viewModel) {
                     navController.popBackStack()
                 }
             }

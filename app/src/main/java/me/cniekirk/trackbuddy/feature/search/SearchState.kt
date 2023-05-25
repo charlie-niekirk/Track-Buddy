@@ -7,7 +7,8 @@ import me.cniekirk.trackbuddy.navigation.Direction
 data class SearchState(
     val direction: Direction = Direction.DEPARTURES,
     val requiredDestination: TrainStation? = null,
-    val optionalDestination: TrainStation? = null
+    val optionalDestination: TrainStation? = null,
+    val openAnalyticsDialog: Boolean = false
 )
 
 sealed class SearchEffect {

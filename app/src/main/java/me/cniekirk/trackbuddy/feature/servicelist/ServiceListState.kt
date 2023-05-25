@@ -23,4 +23,11 @@ sealed class ServiceListEffect {
     object NavigateBack : ServiceListEffect()
 
     data class Error(@StringRes val message: Int) : ServiceListEffect()
+
+    data class NavigateToDetails(
+        val rid: String,
+        val serviceId: String,
+        val startCrs: String,
+        val endCrs: String
+    ) : ServiceListEffect()
 }

@@ -1,3 +1,5 @@
+import com.google.protobuf.gradle.id
+
 @Suppress("DSL_SCOPE_VIOLATION")
 
 plugins {
@@ -6,6 +8,9 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.com.google.dagger.hilt.android)
     alias(libs.plugins.com.google.devtools.ksp)
+    alias(libs.plugins.com.google.protobuf)
+    alias(libs.plugins.com.google.firebase.crashlytics)
+    alias(libs.plugins.com.google.gms.google.services)
     id(libs.plugins.parcelize.get().pluginId)
 }
 
@@ -83,7 +88,14 @@ dependencies {
     implementation(libs.bundles.room)
     ksp(libs.room.compiler)
 
-    implementation(libs.accompanist.navigation)
+    implementation(libs.datastore)
+    implementation(libs.protobuf)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.analytics)
+    implementation(libs.crashlytics)
+
+    implementation(libs.navigation.compose)
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.moshi)
@@ -107,4 +119,19 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.18.0"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                id("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }

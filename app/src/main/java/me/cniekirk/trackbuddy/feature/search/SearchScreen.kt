@@ -15,18 +15,29 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.SwapVert
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -77,12 +88,14 @@ fun SearchScreen(
         direction = state.direction,
         requiredStation = requiredText,
         optionalStation = optionalText,
+        openAnalyticsDialog = state.openAnalyticsDialog,
         onRequiredPressed = viewModel::onRequiredPressed,
         onOptionalPressed = viewModel::onOptionalPressed,
         onSwapPressed = viewModel::onSwapPressed,
         onDepartingPressed = viewModel::onDepartingPressed,
         onArrivingPressed = viewModel::onArrivingPressed,
-        onSearchPressed = viewModel::onSearchPressed
+        onSearchPressed = viewModel::onSearchPressed,
+        onDialogDismissed = viewModel::onDialogDismissed
     )
 
     LaunchedEffect(Unit) {
@@ -96,12 +109,14 @@ fun SearchScreenContent(
     direction: Direction,
     requiredStation: String,
     optionalStation: String,
+    openAnalyticsDialog: Boolean,
     onRequiredPressed: () -> Unit,
     onOptionalPressed: () -> Unit,
     onSwapPressed: () -> Unit,
     onDepartingPressed: () -> Unit,
     onArrivingPressed: () -> Unit,
-    onSearchPressed: () -> Unit
+    onSearchPressed: () -> Unit,
+    onDialogDismissed: (Boolean, Boolean) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         CenterAlignedTopAppBar(
@@ -197,6 +212,68 @@ fun SearchScreenContent(
             Text(text = stringResource(id = R.string.search_button))
         }
     }
+
+    if (openAnalyticsDialog) {
+        val crashlyticsChecked = remember { mutableStateOf(true) }
+        val analyticsChecked = remember { mutableStateOf(false) }
+
+        AlertDialog(
+            onDismissRequest = {
+                onDialogDismissed(analyticsChecked.value, crashlyticsChecked.value)
+            }
+        ) {
+            Surface(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .wrapContentHeight(),
+                shape = MaterialTheme.shapes.large,
+                tonalElevation = AlertDialogDefaults.TonalElevation
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Analytics,
+                        contentDescription = null
+                    )
+                    Text(
+                        modifier = Modifier.padding(top = 16.dp),
+                        text = stringResource(R.string.analytics_dialog_title),
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                    Text(
+                        modifier = Modifier.padding(top = 16.dp),
+                        text = stringResource(id = R.string.analytics_explainer),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Divider(modifier = Modifier.padding(top = 16.dp))
+                    LabelSwitch(
+                        modifier = Modifier.padding(top = 16.dp),
+                        checked = crashlyticsChecked.value,
+                        label = stringResource(id = R.string.crashlytics_switch_label)
+                    ) {
+                        crashlyticsChecked.value = it
+                    }
+                    LabelSwitch(
+                        modifier = Modifier.padding(top = 8.dp),
+                        checked = analyticsChecked.value,
+                        label = stringResource(id = R.string.analytics_switch_label)
+                    ) {
+                        analyticsChecked.value = it
+                    }
+                    Divider(modifier = Modifier.padding(top = 16.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
+                    TextButton(
+                        onClick = { onDialogDismissed(analyticsChecked.value, crashlyticsChecked.value) },
+                        modifier = Modifier.align(Alignment.End)
+                    ) {
+                        Text(stringResource(R.string.confirm_dialog_label))
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -231,6 +308,26 @@ fun StationSelector(
 }
 
 @Composable
+fun LabelSwitch(
+    modifier: Modifier = Modifier,
+    checked: Boolean,
+    label: String,
+    onCheckChanged: (Boolean) -> Unit
+) {
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Switch(
+            checked = checked,
+            onCheckedChange = { onCheckChanged(it) }
+        )
+    }
+}
+
+@Composable
 @Preview(showBackground = true, device = Devices.PIXEL_4)
 fun SearchScreenContentPreview() {
     TrackBuddyTheme {
@@ -239,12 +336,14 @@ fun SearchScreenContentPreview() {
                 direction = Direction.ARRIVALS,
                 requiredStation = "London Waterloo",
                 optionalStation = "Salisbury",
+                openAnalyticsDialog = false,
                 onRequiredPressed = {},
                 onOptionalPressed = {},
                 onSwapPressed = {},
                 onDepartingPressed = {},
                 onArrivingPressed = {},
-                onSearchPressed = {}
+                onSearchPressed = {},
+                onDialogDismissed = { _, _ -> }
             )
         }
     }
@@ -259,12 +358,36 @@ fun SearchScreenContentNightPreview() {
                 direction = Direction.DEPARTURES,
                 requiredStation = "London Waterloo",
                 optionalStation = "Salisbury",
+                openAnalyticsDialog = false,
                 onRequiredPressed = {},
                 onOptionalPressed = {},
                 onSwapPressed = {},
                 onDepartingPressed = {},
                 onArrivingPressed = {},
-                onSearchPressed = {}
+                onSearchPressed = {},
+                onDialogDismissed = { _, _ -> }
+            )
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true, device = Devices.PIXEL_4)
+fun SearchScreenContentDialogPreview() {
+    TrackBuddyTheme {
+        Surface {
+            SearchScreenContent(
+                direction = Direction.DEPARTURES,
+                requiredStation = "London Waterloo",
+                optionalStation = "Salisbury",
+                openAnalyticsDialog = true,
+                onRequiredPressed = {},
+                onOptionalPressed = {},
+                onSwapPressed = {},
+                onDepartingPressed = {},
+                onArrivingPressed = {},
+                onSearchPressed = {},
+                onDialogDismissed = { _, _ -> }
             )
         }
     }

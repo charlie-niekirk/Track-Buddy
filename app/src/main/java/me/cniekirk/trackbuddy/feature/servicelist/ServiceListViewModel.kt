@@ -6,11 +6,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import me.cniekirk.trackbuddy.R
 import me.cniekirk.trackbuddy.data.util.Result
 import me.cniekirk.trackbuddy.domain.model.Service
+import me.cniekirk.trackbuddy.domain.model.ServiceStop
 import me.cniekirk.trackbuddy.domain.model.ServiceList
-import me.cniekirk.trackbuddy.domain.repository.HuxleyRepository
+import me.cniekirk.trackbuddy.domain.usecase.GetArrivalsUseCase
 import me.cniekirk.trackbuddy.domain.usecase.GetDeparturesUseCase
 import me.cniekirk.trackbuddy.navigation.Direction
-import me.cniekirk.trackbuddy.navigation.END_ARG_ID
 import me.cniekirk.trackbuddy.navigation.ServiceListArgs
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -22,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ServiceListViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getDeparturesUseCase: GetDeparturesUseCase
+    private val getDeparturesUseCase: GetDeparturesUseCase,
+    private val getArrivalsUseCase: GetArrivalsUseCase
 ) : ViewModel(), ContainerHost<ServiceListState, ServiceListEffect> {
 
     private val serviceListArgs = ServiceListArgs(savedStateHandle)
@@ -46,14 +47,29 @@ class ServiceListViewModel @Inject constructor(
                 }
             }
             Direction.ARRIVALS -> {
-//                val optional = end.ifEmpty { null }
-//                huxleyRepository.getArrivalBoard(start, optional)
+                when (val result = getArrivalsUseCase(start, end)) {
+                    is Result.Failure -> {
+                        postSideEffect(ServiceListEffect.Error(R.string.generic_error))
+                    }
+                    is Result.Success -> {
+                        reduce {
+                            state.copy(serviceList = result.data)
+                        }
+                    }
+                }
             }
         }
     }
 
     fun onServicePressed(service: Service) = intent {
-
+        postSideEffect(
+            ServiceListEffect.NavigateToDetails(
+                service.rid,
+                service.serviceId,
+                serviceListArgs.start,
+                serviceListArgs.end ?: ""
+            )
+        )
     }
 
     fun backPressed() = intent { postSideEffect(ServiceListEffect.NavigateBack) }
