@@ -34,9 +34,10 @@
     <string name="coaches_format">%1$d coaches</string>
     <string name="more_info_button">More information</string>
     <string name="coaches_direction">Direction of travel</string>
+    <string name="refresh_button">Refresh information</string>
     <plurals name="last_refreshed_format">
         <item quantity="zero">Updated recently</item>
-        <item quantity="one">Last updated %1$d minute ago, pull to refresh</item>
-        <item quantity="other">Last updated %1$d minutes ago, pull to refresh</item>
+        <item quantity="one">Last updated %1$d minute ago</item>
+        <item quantity="other">Last updated %1$d minutes ago</item>
     </plurals>
 </resources>

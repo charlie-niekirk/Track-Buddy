@@ -19,24 +19,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowRightAlt
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.PullRefreshState
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -65,12 +58,14 @@ import androidx.compose.ui.unit.sp
 import kotlinx.collections.immutable.ImmutableList
 import me.cniekirk.trackbuddy.R
 import me.cniekirk.trackbuddy.domain.model.ServiceStop
-import me.cniekirk.trackbuddy.feature.servicedetail.Loading.*
+import me.cniekirk.trackbuddy.feature.servicedetail.Loading.LOTS
+import me.cniekirk.trackbuddy.feature.servicedetail.Loading.NONE
+import me.cniekirk.trackbuddy.feature.servicedetail.Loading.NO_DATA
+import me.cniekirk.trackbuddy.feature.servicedetail.Loading.SOME
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import java.util.Locale
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ServiceDetailsScreen(
     viewModel: ServiceDetailsViewModel,
@@ -104,7 +99,7 @@ fun ServiceDetailsScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServiceDetailsScreenContent(
     origin: String,
@@ -147,14 +142,14 @@ fun ServiceDetailsScreenContent(
         ) {
             if (trainInfo != null) {
                 Column {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column(modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = stringResource(id = R.string.coaches_format, trainInfo.numCoaches),
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Icon(
-                                modifier = Modifier.padding(start = 16.dp),
+                                modifier = Modifier.padding(start = 8.dp),
                                 imageVector = Icons.Default.ArrowRightAlt,
                                 contentDescription = null
                             )
@@ -184,17 +179,28 @@ fun ServiceDetailsScreenContent(
                             listState.animateScrollToItem(trainInfo.coachInformation.size)
                         }
 
-                        Text(
-                            modifier = Modifier.padding(top = 16.dp),
-                            text = pluralStringResource(
-                                R.plurals.last_refreshed_format,
-                                minutesSinceRefresh,
-                                minutesSinceRefresh
-                            ),
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = pluralStringResource(
+                                    R.plurals.last_refreshed_format,
+                                    minutesSinceRefresh,
+                                    minutesSinceRefresh
+                                ),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            TextButton(onClick = {  }) {
+                                Icon(imageVector = Icons.Default.Refresh, contentDescription = null)
+                                Text(
+                                    modifier = Modifier.padding(start = 8.dp),
+                                    text = stringResource(id = R.string.refresh_button)
+                                )
+                            }
+                        }
                     }
-                    Divider()
+                    Divider(modifier = Modifier.padding(top = 8.dp))
                 }
             }
         }

@@ -1,5 +1,5 @@
 [versions]
-com-android-application = "8.2.0-alpha04"
+com-android-application = "8.2.0-alpha05"
 org-jetbrains-kotlin-android = "1.8.20"
 hilt = "2.44"
 hilt-navigation = "1.0.0"
