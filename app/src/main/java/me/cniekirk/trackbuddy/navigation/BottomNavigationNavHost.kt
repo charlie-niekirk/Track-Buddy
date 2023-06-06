@@ -7,6 +7,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -29,13 +30,6 @@ import me.cniekirk.trackbuddy.feature.servicelist.ServiceListScreen
 import me.cniekirk.trackbuddy.feature.servicelist.ServiceListViewModel
 import me.cniekirk.trackbuddy.feature.stationselect.StationSelectScreen
 import me.cniekirk.trackbuddy.feature.stationselect.StationSelectViewModel
-
-private val items = listOf(
-    BottomNavDestination.Search,
-    BottomNavDestination.Plan,
-    BottomNavDestination.Favourites,
-    BottomNavDestination.Settings
-)
 
 @Composable
 fun BottomNavigationNavHost(
@@ -82,7 +76,6 @@ fun BottomNavigationNavHost(
             startDestination = startDestination,
             modifier = Modifier.padding(paddingValues)
         ) {
-            // composable...
             composable(
                 route = BottomNavDestination.Search.route,
                 exitTransition = {

@@ -19,10 +19,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -83,7 +85,8 @@ fun ServiceListScreen(
         stationMessages = state.serviceList.stationMessages,
         services = state.serviceList.serviceList,
         onBackPressed = viewModel::backPressed,
-        onServicePressed = viewModel::onServicePressed
+        onServicePressed = viewModel::onServicePressed,
+        onFavouritePressed = {}
     )
 }
 
@@ -96,7 +99,8 @@ fun ServiceListScreenContent(
     stationMessages: ImmutableList<String>,
     services: ImmutableList<Service>?,
     onBackPressed: () -> Unit,
-    onServicePressed: (Service) -> Unit
+    onServicePressed: (Service) -> Unit,
+    onFavouritePressed: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -123,6 +127,13 @@ fun ServiceListScreenContent(
                     imageVector = Icons.Default.ArrowBack,
                     colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurface),
                     contentDescription = stringResource(id = R.string.back_button)
+                )
+            },
+            actions = {
+                Icon(
+                    modifier = Modifier.clickable { onFavouritePressed() },
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = stringResource(id = R.string.favourite_button)
                 )
             }
         )
@@ -299,7 +310,8 @@ fun ServiceListScreenContentPreview() {
                 services = persistentListOf(),
                 onBackPressed = {},
                 onServicePressed = {},
-                stationMessages = persistentListOf()
+                stationMessages = persistentListOf(),
+                onFavouritePressed = {}
             )
         }
     }

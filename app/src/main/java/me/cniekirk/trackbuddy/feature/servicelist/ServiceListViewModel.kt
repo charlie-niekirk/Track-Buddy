@@ -73,4 +73,8 @@ class ServiceListViewModel @Inject constructor(
     }
 
     fun backPressed() = intent { postSideEffect(ServiceListEffect.NavigateBack) }
+
+    fun favouritePressed() = intent {
+
+    }
 }

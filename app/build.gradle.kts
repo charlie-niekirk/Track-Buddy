@@ -83,6 +83,7 @@ dependencies {
 
     implementation(libs.hilt)
     implementation(libs.hilt.navigation)
+    implementation(libs.androidx.material3.window.size)
     kapt(libs.hilt.compiler)
 
     implementation(libs.bundles.room)
@@ -90,6 +91,7 @@ dependencies {
 
     implementation(libs.datastore)
     implementation(libs.protobuf)
+    implementation(libs.adaptive)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.analytics)

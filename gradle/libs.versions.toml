@@ -1,5 +1,5 @@
 [versions]
-com-android-application = "8.2.0-alpha05"
+com-android-application = "8.2.0-alpha06"
 org-jetbrains-kotlin-android = "1.8.20"
 hilt = "2.44"
 hilt-navigation = "1.0.0"
@@ -23,12 +23,14 @@ moshi = "1.14.0"
 material3 = "1.1.0"
 mockk = "1.13.5"
 coroutines-test = "1.6.4"
-firebase = "32.0.0"
+firebase = "32.1.0"
 datastore = "1.0.0"
 proto = "3.18.0"
 proto-plugin = "0.9.1"
 crashlytics-plugin = "2.9.5"
 google-services = "4.3.15"
+material3-window-size = "1.2.0-alpha02"
+accompanist = "0.31.3-beta"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -58,6 +60,7 @@ analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
 datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
 protobuf = { group = "com.google.protobuf", name = "protobuf-javalite", version.ref = "proto" }
+adaptive = { group = "com.google.accompanist", name = "accompanist-adaptive", version.ref = "accompanist" }
 
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
@@ -79,6 +82,7 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 
 immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "immutable" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
+androidx-material3-window-size = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "material3-window-size" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "com-android-application" }

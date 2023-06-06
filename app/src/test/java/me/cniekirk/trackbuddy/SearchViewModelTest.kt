@@ -6,6 +6,8 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation
+import me.cniekirk.trackbuddy.domain.repository.AnalyticsRepository
+import me.cniekirk.trackbuddy.domain.repository.PreferencesRepository
 import me.cniekirk.trackbuddy.feature.search.SearchEffect
 import me.cniekirk.trackbuddy.feature.search.SearchState
 import me.cniekirk.trackbuddy.feature.search.SearchViewModel
@@ -18,11 +20,14 @@ import org.orbitmvi.orbit.test
 class SearchViewModelTest {
 
     private lateinit var searchViewModel: SearchViewModel
+
     private val savedStateHandle = mockk<SavedStateHandle>()
+    private val preferencesRepository = mockk<PreferencesRepository>()
+    private val analyticsRepository = mockk<AnalyticsRepository>()
 
     @Before
     fun setup() {
-        searchViewModel = SearchViewModel(savedStateHandle)
+        searchViewModel = SearchViewModel(savedStateHandle, preferencesRepository, analyticsRepository)
     }
 
     @Test

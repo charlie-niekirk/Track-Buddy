@@ -35,6 +35,7 @@
     <string name="more_info_button">More information</string>
     <string name="coaches_direction">Direction of travel</string>
     <string name="refresh_button">Refresh information</string>
+    <string name="favourite_button">Favourite button</string>
     <plurals name="last_refreshed_format">
         <item quantity="zero">Updated recently</item>
         <item quantity="one">Last updated %1$d minute ago</item>

@@ -43,6 +43,13 @@ sealed class BottomNavDestination(val label: String, val route: String, val icon
     )
 }
 
+val items = listOf(
+    BottomNavDestination.Search,
+    BottomNavDestination.Plan,
+    BottomNavDestination.Favourites,
+    BottomNavDestination.Settings
+)
+
 sealed class SecondaryDestination(val route: String) {
 
     object StationSelect : SecondaryDestination(
