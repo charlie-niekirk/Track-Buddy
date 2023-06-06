@@ -7,7 +7,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -34,7 +33,7 @@ import me.cniekirk.trackbuddy.feature.stationselect.StationSelectViewModel
 @Composable
 fun BottomNavigationNavHost(
     navController: NavHostController = rememberNavController(),
-    startDestination: String = BottomNavDestination.Search.route
+    startDestination: String = TrackBuddyDestination.Search.route
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
 
@@ -77,7 +76,7 @@ fun BottomNavigationNavHost(
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(
-                route = BottomNavDestination.Search.route,
+                route = TrackBuddyDestination.Search.route,
                 exitTransition = {
                     when (targetState.destination.route) {
                         SecondaryDestination.StationSelect.route, SecondaryDestination.ServiceList.route -> exitAnimation()
