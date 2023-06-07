@@ -36,6 +36,7 @@
     <string name="coaches_direction">Direction of travel</string>
     <string name="refresh_button">Refresh information</string>
     <string name="favourite_button">Favourite button</string>
+    <string name="two_pane_search_animation">Two Pane Search Animation</string>
     <plurals name="last_refreshed_format">
         <item quantity="zero">Updated recently</item>
         <item quantity="one">Last updated %1$d minute ago</item>

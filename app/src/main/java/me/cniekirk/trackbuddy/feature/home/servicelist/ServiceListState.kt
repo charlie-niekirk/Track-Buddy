@@ -1,4 +1,4 @@
-package me.cniekirk.trackbuddy.feature.servicelist
+package me.cniekirk.trackbuddy.feature.home.servicelist
 
 import androidx.annotation.StringRes
 import kotlinx.collections.immutable.ImmutableList
@@ -15,7 +15,7 @@ data class ServiceQueryDetails(
 )
 
 data class ServiceListState(
-    val serviceList: ServiceList
+    val serviceList: ServiceList = ServiceList()
 )
 
 sealed class ServiceListEffect {

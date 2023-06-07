@@ -1,4 +1,4 @@
-package me.cniekirk.trackbuddy.feature.search
+package me.cniekirk.trackbuddy.feature.home.search
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image

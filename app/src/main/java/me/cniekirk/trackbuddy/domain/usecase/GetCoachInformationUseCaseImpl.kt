@@ -5,9 +5,9 @@ import kotlinx.collections.immutable.toImmutableList
 import me.cniekirk.trackbuddy.data.model.gwr.Vehicle
 import me.cniekirk.trackbuddy.data.util.Result
 import me.cniekirk.trackbuddy.domain.repository.HuxleyRepository
-import me.cniekirk.trackbuddy.feature.servicedetail.CoachInfo
-import me.cniekirk.trackbuddy.feature.servicedetail.Loading
-import me.cniekirk.trackbuddy.feature.servicedetail.TrainInfo
+import me.cniekirk.trackbuddy.feature.home.servicedetail.CoachInfo
+import me.cniekirk.trackbuddy.feature.home.servicedetail.Loading
+import me.cniekirk.trackbuddy.feature.home.servicedetail.TrainInfo
 import javax.inject.Inject
 
 class GetCoachInformationUseCaseImpl @Inject constructor(

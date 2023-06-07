@@ -1,4 +1,4 @@
-package me.cniekirk.trackbuddy.feature.search
+package me.cniekirk.trackbuddy.feature.home.search
 
 import androidx.annotation.StringRes
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation

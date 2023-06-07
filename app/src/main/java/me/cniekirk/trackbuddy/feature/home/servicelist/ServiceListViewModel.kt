@@ -1,4 +1,4 @@
-package me.cniekirk.trackbuddy.feature.servicelist
+package me.cniekirk.trackbuddy.feature.home.servicelist
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

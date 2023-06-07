@@ -1,4 +1,4 @@
-package me.cniekirk.trackbuddy.feature.stationselect
+package me.cniekirk.trackbuddy.feature.home.stationselect
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

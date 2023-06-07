@@ -6,7 +6,7 @@ import me.cniekirk.trackbuddy.data.model.TrainService
 import me.cniekirk.trackbuddy.data.util.Result
 import me.cniekirk.trackbuddy.domain.model.ServiceStop
 import me.cniekirk.trackbuddy.domain.repository.HuxleyRepository
-import me.cniekirk.trackbuddy.feature.servicedetail.ServiceDetailsState
+import me.cniekirk.trackbuddy.feature.home.servicedetail.ServiceDetailsState
 import java.time.Duration
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter

@@ -1,4 +1,4 @@
-package me.cniekirk.trackbuddy.feature.search
+package me.cniekirk.trackbuddy.feature.home.search
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

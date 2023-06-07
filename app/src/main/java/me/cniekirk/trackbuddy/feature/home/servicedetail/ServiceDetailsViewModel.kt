@@ -1,4 +1,4 @@
-package me.cniekirk.trackbuddy.feature.servicedetail
+package me.cniekirk.trackbuddy.feature.home.servicedetail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -38,7 +38,9 @@ class ServiceDetailsViewModel @Inject constructor(
 
     private var job: Job? = null
 
-    override val container = container<ServiceDetailsState, ServiceDetailsEffect>(ServiceDetailsState()) {
+    override val container = container<ServiceDetailsState, ServiceDetailsEffect>(
+        ServiceDetailsState()
+    ) {
         analyticsRepository.logScreen("service_details_screen", "ServiceDetailsScreen")
         startTimer()
         getServiceDetails(serviceDetailsArgs.rid, serviceDetailsArgs.serviceId, serviceDetailsArgs.startCrs, serviceDetailsArgs.endCrs)

@@ -21,14 +21,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation
-import me.cniekirk.trackbuddy.feature.search.SearchScreen
-import me.cniekirk.trackbuddy.feature.search.SearchViewModel
-import me.cniekirk.trackbuddy.feature.servicedetail.ServiceDetailsScreen
-import me.cniekirk.trackbuddy.feature.servicedetail.ServiceDetailsViewModel
-import me.cniekirk.trackbuddy.feature.servicelist.ServiceListScreen
-import me.cniekirk.trackbuddy.feature.servicelist.ServiceListViewModel
-import me.cniekirk.trackbuddy.feature.stationselect.StationSelectScreen
-import me.cniekirk.trackbuddy.feature.stationselect.StationSelectViewModel
+import me.cniekirk.trackbuddy.feature.home.search.SearchScreen
+import me.cniekirk.trackbuddy.feature.home.search.SearchViewModel
+import me.cniekirk.trackbuddy.feature.home.servicedetail.ServiceDetailsScreen
+import me.cniekirk.trackbuddy.feature.home.servicedetail.ServiceDetailsViewModel
+import me.cniekirk.trackbuddy.feature.home.servicelist.ServiceListScreen
+import me.cniekirk.trackbuddy.feature.home.servicelist.ServiceListViewModel
+import me.cniekirk.trackbuddy.feature.home.stationselect.StationSelectScreen
+import me.cniekirk.trackbuddy.feature.home.stationselect.StationSelectViewModel
 
 @Composable
 fun BottomNavigationNavHost(

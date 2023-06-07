@@ -8,9 +8,9 @@ import kotlinx.coroutines.test.runTest
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation
 import me.cniekirk.trackbuddy.domain.repository.AnalyticsRepository
 import me.cniekirk.trackbuddy.domain.repository.PreferencesRepository
-import me.cniekirk.trackbuddy.feature.search.SearchEffect
-import me.cniekirk.trackbuddy.feature.search.SearchState
-import me.cniekirk.trackbuddy.feature.search.SearchViewModel
+import me.cniekirk.trackbuddy.feature.home.search.SearchEffect
+import me.cniekirk.trackbuddy.feature.home.search.SearchState
+import me.cniekirk.trackbuddy.feature.home.search.SearchViewModel
 import me.cniekirk.trackbuddy.navigation.Direction
 import org.junit.Before
 import org.junit.Test

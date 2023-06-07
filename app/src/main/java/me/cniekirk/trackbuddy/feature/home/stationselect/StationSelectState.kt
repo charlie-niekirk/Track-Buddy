@@ -1,4 +1,4 @@
-package me.cniekirk.trackbuddy.feature.stationselect
+package me.cniekirk.trackbuddy.feature.home.stationselect
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf

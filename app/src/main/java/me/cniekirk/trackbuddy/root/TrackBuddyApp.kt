@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.window.layout.DisplayFeature
 import me.cniekirk.trackbuddy.navigation.BottomNavigationNavHost
 import me.cniekirk.trackbuddy.navigation.TrackBuddyDestination
@@ -14,24 +16,34 @@ import me.cniekirk.trackbuddy.ui.utils.ContentType
 import me.cniekirk.trackbuddy.ui.utils.NavigationType
 
 @Composable
-fun TrackBuddyApp(windowSizeClass: WindowSizeClass) {
+fun TrackBuddyApp(
+    windowSizeClass: WindowSizeClass,
+    displayFeatures: List<DisplayFeature>
+) {
     val navigationType: NavigationType
     val contentType: ContentType
 
     when (windowSizeClass.widthSizeClass) {
-        WindowWidthSizeClass.Compact, WindowWidthSizeClass.Expanded -> {
-            // Normal phone oriented UI
-            navigationType = NavigationType.BOTTOM_NAVIGATION
-            contentType = ContentType.SINGLE_PANE
-        }
         WindowWidthSizeClass.Medium -> {
             // Tablet/foldable oriented UI
             navigationType = NavigationType.NAVIGATION_RAIL
             contentType = ContentType.DUAL_PANE
         }
+        else -> {
+            // Normal phone oriented UI
+            navigationType = NavigationType.BOTTOM_NAVIGATION
+            contentType = ContentType.SINGLE_PANE
+        }
     }
 
+    val navController = rememberNavController()
 
+    TrackBuddyNavHost(
+        navController = navController,
+        contentType = contentType,
+        displayFeatures = displayFeatures,
+        navigationType = navigationType
+    )
 }
 
 @Composable
@@ -48,6 +60,8 @@ fun TrackBuddyNavHost(
         startDestination = TrackBuddyDestination.Search.route
     ) {
         // TrackBuddy search screen
+        composable(TrackBuddyDestination.Search.route) {
 
+        }
     }
 }

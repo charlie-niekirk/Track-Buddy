@@ -1,4 +1,4 @@
-package me.cniekirk.trackbuddy.feature.servicedetail
+package me.cniekirk.trackbuddy.feature.home.servicedetail
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -58,10 +58,10 @@ import androidx.compose.ui.unit.sp
 import kotlinx.collections.immutable.ImmutableList
 import me.cniekirk.trackbuddy.R
 import me.cniekirk.trackbuddy.domain.model.ServiceStop
-import me.cniekirk.trackbuddy.feature.servicedetail.Loading.LOTS
-import me.cniekirk.trackbuddy.feature.servicedetail.Loading.NONE
-import me.cniekirk.trackbuddy.feature.servicedetail.Loading.NO_DATA
-import me.cniekirk.trackbuddy.feature.servicedetail.Loading.SOME
+import me.cniekirk.trackbuddy.feature.home.servicedetail.Loading.LOTS
+import me.cniekirk.trackbuddy.feature.home.servicedetail.Loading.NONE
+import me.cniekirk.trackbuddy.feature.home.servicedetail.Loading.NO_DATA
+import me.cniekirk.trackbuddy.feature.home.servicedetail.Loading.SOME
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import java.util.Locale

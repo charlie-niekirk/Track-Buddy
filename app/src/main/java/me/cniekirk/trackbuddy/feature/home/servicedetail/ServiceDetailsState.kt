@@ -1,4 +1,4 @@
-package me.cniekirk.trackbuddy.feature.servicedetail
+package me.cniekirk.trackbuddy.feature.home.servicedetail
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf

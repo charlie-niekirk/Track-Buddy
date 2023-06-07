@@ -1,4 +1,4 @@
-package me.cniekirk.trackbuddy.feature.servicelist
+package me.cniekirk.trackbuddy.feature.home.servicelist
 
 import android.text.Html
 import android.text.style.URLSpan
