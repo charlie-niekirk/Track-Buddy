@@ -13,33 +13,42 @@ private const val START_ARG_ID = "start"
 const val END_ARG_ID = "end"
 const val DIRECTION_ARG_ID = "direction"
 const val REQUIRED_ARG_ID = "isRequired"
+private const val RID_ARG_ID = "rid"
+private const val SERVICE_ID_ARG_ID = "serviceId"
 
-sealed class BottomNavDestination(val label: String, val route: String, val icon: ImageVector) {
+sealed class TrackBuddyDestination(val label: String, val route: String, val icon: ImageVector) {
 
-    object Search : BottomNavDestination(
+    object Search : TrackBuddyDestination(
         label = "Search",
         route = "search",
         icon = Icons.Default.Search
     )
 
-    object Plan : BottomNavDestination(
+    object Plan : TrackBuddyDestination(
         label = "Plan",
         route = "plan",
         icon = Icons.Default.LibraryBooks
     )
 
-    object Favourites : BottomNavDestination(
+    object Favourites : TrackBuddyDestination(
         label = "Favourites",
         route = "favourites",
         icon = Icons.Default.Favorite
     )
 
-    object Settings : BottomNavDestination(
+    object Settings : TrackBuddyDestination(
         label = "Settings",
         route = "settings",
         icon = Icons.Default.Settings
     )
 }
+
+val items = listOf(
+    TrackBuddyDestination.Search,
+    TrackBuddyDestination.Plan,
+    TrackBuddyDestination.Favourites,
+    TrackBuddyDestination.Settings
+)
 
 sealed class SecondaryDestination(val route: String) {
 
@@ -49,6 +58,10 @@ sealed class SecondaryDestination(val route: String) {
 
     object ServiceList : SecondaryDestination(
         route = "serviceList/{$START_ARG_ID}/{$DIRECTION_ARG_ID}?$END_ARG_ID={$END_ARG_ID}"
+    )
+
+    object ServiceDetails : SecondaryDestination(
+        route = "serviceDetails/{$RID_ARG_ID}/{$SERVICE_ID_ARG_ID}/{$START_ARG_ID}?{$END_ARG_ID}={$END_ARG_ID}"
     )
 }
 
@@ -67,6 +80,10 @@ fun NavController.navigateToServiceList(start: String, end: String?, direction: 
     this.navigate("serviceList/$start/${direction.name}?$END_ARG_ID=$end")
 }
 
+fun NavController.navigateToServiceDetails(rid: String, serviceId: String, start: String, end: String) {
+    this.navigate("serviceDetails/$rid/$serviceId/$start?$end")
+}
+
 enum class Direction {
     DEPARTURES,
     ARRIVALS
@@ -78,5 +95,15 @@ class ServiceListArgs(val start: String, val end: String?, val direction: Direct
                 checkNotNull(savedStateHandle[START_ARG_ID]) as String,
                 savedStateHandle.get<String>(END_ARG_ID),
                 Direction.valueOf(checkNotNull(savedStateHandle[DIRECTION_ARG_ID]) as String)
+            )
+}
+
+class ServiceDetailsArgs(val rid: String, val serviceId: String, val startCrs: String, val endCrs: String) {
+    constructor(savedStateHandle: SavedStateHandle) :
+            this(
+                checkNotNull(savedStateHandle[RID_ARG_ID]) as String,
+                checkNotNull(savedStateHandle[SERVICE_ID_ARG_ID]) as String,
+                checkNotNull(savedStateHandle[START_ARG_ID]) as String,
+                checkNotNull(savedStateHandle[END_ARG_ID]) as String
             )
 }

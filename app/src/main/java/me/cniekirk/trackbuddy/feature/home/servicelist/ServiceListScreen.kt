@@ -1,16 +1,12 @@
-package me.cniekirk.trackbuddy.feature.servicelist
+package me.cniekirk.trackbuddy.feature.home.servicelist
 
-import android.text.SpannedString
-import android.widget.Toast
-import android.text.Annotation
 import android.text.Html
 import android.text.style.URLSpan
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,10 +19,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -51,16 +49,17 @@ import kotlinx.collections.immutable.persistentListOf
 import me.cniekirk.trackbuddy.R
 import me.cniekirk.trackbuddy.domain.model.DepartureTime
 import me.cniekirk.trackbuddy.domain.model.Service
+import me.cniekirk.trackbuddy.domain.model.ServiceStop
 import me.cniekirk.trackbuddy.navigation.Direction
 import me.cniekirk.trackbuddy.ui.theme.TrackBuddyTheme
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import timber.log.Timber
 
 @Composable
 fun ServiceListScreen(
     viewModel: ServiceListViewModel,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    showDetails: (String, String, String, String) -> Unit
 ) {
     val context = LocalContext.current
     val state = viewModel.collectAsState().value
@@ -73,6 +72,9 @@ fun ServiceListScreen(
             ServiceListEffect.NavigateBack -> {
                 navigateBack()
             }
+            is ServiceListEffect.NavigateToDetails -> {
+                showDetails(sideEffect.rid, sideEffect.serviceId, sideEffect.startCrs, sideEffect.endCrs)
+            }
         }
     }
 
@@ -83,7 +85,8 @@ fun ServiceListScreen(
         stationMessages = state.serviceList.stationMessages,
         services = state.serviceList.serviceList,
         onBackPressed = viewModel::backPressed,
-        onServicePressed = viewModel::onServicePressed
+        onServicePressed = viewModel::onServicePressed,
+        onFavouritePressed = {}
     )
 }
 
@@ -96,7 +99,8 @@ fun ServiceListScreenContent(
     stationMessages: ImmutableList<String>,
     services: ImmutableList<Service>?,
     onBackPressed: () -> Unit,
-    onServicePressed: (Service) -> Unit
+    onServicePressed: (Service) -> Unit,
+    onFavouritePressed: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -124,6 +128,13 @@ fun ServiceListScreenContent(
                     colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurface),
                     contentDescription = stringResource(id = R.string.back_button)
                 )
+            },
+            actions = {
+                Icon(
+                    modifier = Modifier.clickable { onFavouritePressed() },
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = stringResource(id = R.string.favourite_button)
+                )
             }
         )
 
@@ -142,14 +153,14 @@ fun ServiceListScreenContent(
             CircularProgressIndicator()
             Spacer(modifier = Modifier.weight(1f))
         } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-            ) {
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(services) { service ->
-                    ServiceItem(service = service) {
-                        onServicePressed(it)
-                    }
+                    ServiceItem(
+                        modifier = Modifier
+                            .clickable { onServicePressed(service) }
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        service = service
+                    )
                     Divider()
                 }
             }
@@ -185,7 +196,7 @@ fun StationMessage(
     message: String
 ) {
     val annotatedMessage = annotatedStringResource(
-        message = message,
+        message = message.trimEnd(),
         spanStyles = { _ -> SpanStyle(textDecoration = TextDecoration.Underline) }
     )
     val uriHandler = LocalUriHandler.current
@@ -213,13 +224,12 @@ fun StationMessage(
 
 @Composable
 fun ServiceItem(
-    service: Service,
-    onServicePressed: (Service) -> Unit
+    modifier: Modifier = Modifier,
+    service: Service
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .clickable { onServicePressed(service) }
             .graphicsLayer {
                 if (service.departureTime is DepartureTime.Departed) {
                     alpha = 0.5f
@@ -300,7 +310,8 @@ fun ServiceListScreenContentPreview() {
                 services = persistentListOf(),
                 onBackPressed = {},
                 onServicePressed = {},
-                stationMessages = persistentListOf()
+                stationMessages = persistentListOf(),
+                onFavouritePressed = {}
             )
         }
     }

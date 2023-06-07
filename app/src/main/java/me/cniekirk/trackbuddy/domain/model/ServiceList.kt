@@ -2,7 +2,6 @@ package me.cniekirk.trackbuddy.domain.model
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import me.cniekirk.trackbuddy.data.model.TrainService
 import me.cniekirk.trackbuddy.navigation.Direction
 
 sealed class DepartureTime {
@@ -24,8 +23,12 @@ sealed class DepartureTime {
 }
 
 data class Service(
+    val rid: String,
+    val serviceId: String,
     val origin: String,
+    val originCrs: String,
     val destination: String,
+    val destinationCrs: String,
     val operator: String,
     val departureTime: DepartureTime,
     val platform: String

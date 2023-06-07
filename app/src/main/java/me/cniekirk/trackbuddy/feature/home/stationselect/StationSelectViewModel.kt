@@ -1,4 +1,4 @@
-package me.cniekirk.trackbuddy.feature.stationselect
+package me.cniekirk.trackbuddy.feature.home.stationselect
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

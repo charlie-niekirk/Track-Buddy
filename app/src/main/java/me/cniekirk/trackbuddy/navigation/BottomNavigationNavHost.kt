@@ -1,11 +1,7 @@
 package me.cniekirk.trackbuddy.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -19,31 +15,25 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation
-import me.cniekirk.trackbuddy.feature.search.SearchScreen
-import me.cniekirk.trackbuddy.feature.search.SearchViewModel
-import me.cniekirk.trackbuddy.feature.servicelist.ServiceListScreen
-import me.cniekirk.trackbuddy.feature.servicelist.ServiceListViewModel
-import me.cniekirk.trackbuddy.feature.stationselect.StationSelectScreen
-import me.cniekirk.trackbuddy.feature.stationselect.StationSelectViewModel
+import me.cniekirk.trackbuddy.feature.home.search.SearchScreen
+import me.cniekirk.trackbuddy.feature.home.search.SearchViewModel
+import me.cniekirk.trackbuddy.feature.home.servicedetail.ServiceDetailsScreen
+import me.cniekirk.trackbuddy.feature.home.servicedetail.ServiceDetailsViewModel
+import me.cniekirk.trackbuddy.feature.home.servicelist.ServiceListScreen
+import me.cniekirk.trackbuddy.feature.home.servicelist.ServiceListViewModel
+import me.cniekirk.trackbuddy.feature.home.stationselect.StationSelectScreen
+import me.cniekirk.trackbuddy.feature.home.stationselect.StationSelectViewModel
 
-private val items = listOf(
-    BottomNavDestination.Search,
-    BottomNavDestination.Plan,
-    BottomNavDestination.Favourites,
-    BottomNavDestination.Settings
-)
-
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNavigationNavHost(
-    navController: NavHostController = rememberAnimatedNavController(),
-    startDestination: String = BottomNavDestination.Search.route
+    navController: NavHostController = rememberNavController(),
+    startDestination: String = TrackBuddyDestination.Search.route
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
 
@@ -80,14 +70,13 @@ fun BottomNavigationNavHost(
             }
         }
     ) { paddingValues ->
-        AnimatedNavHost(
+        NavHost(
             navController = navController,
             startDestination = startDestination,
             modifier = Modifier.padding(paddingValues)
         ) {
-            // composable...
             composable(
-                route = BottomNavDestination.Search.route,
+                route = TrackBuddyDestination.Search.route,
                 exitTransition = {
                     when (targetState.destination.route) {
                         SecondaryDestination.StationSelect.route, SecondaryDestination.ServiceList.route -> exitAnimation()
@@ -157,10 +146,27 @@ fun BottomNavigationNavHost(
                 route = SecondaryDestination.ServiceList.route,
                 arguments = listOf(navArgument(END_ARG_ID) { nullable = true }),
                 enterTransition = { enterAnimation() },
+                exitTransition = { exitAnimation() },
+                popEnterTransition = { popEnterAnimation() },
                 popExitTransition = { popExitAnimation() }
             ) {
                 val viewModel = hiltViewModel<ServiceListViewModel>()
-                ServiceListScreen(viewModel = viewModel) {
+                ServiceListScreen(
+                    viewModel = viewModel,
+                    navigateBack = { navController.popBackStack() },
+                    showDetails = { rid, serviceId, startCrs, endCrs ->
+                        navController.navigateToServiceDetails(rid, serviceId, startCrs, endCrs)
+                    }
+                )
+            }
+            composable(
+                route = SecondaryDestination.ServiceDetails.route,
+                arguments = listOf(navArgument(END_ARG_ID) { defaultValue = "" }),
+                enterTransition = { enterAnimation() },
+                popExitTransition = { popExitAnimation() }
+            ) {
+                val viewModel = hiltViewModel<ServiceDetailsViewModel>()
+                ServiceDetailsScreen(viewModel = viewModel) {
                     navController.popBackStack()
                 }
             }

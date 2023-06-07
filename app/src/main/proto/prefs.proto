@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_package = "me.cniekirk.trackbuddy.datastore";
+option java_multiple_files = true;
+
+message Preferences {
+    bool normal_launch = 1;
+    bool analytics_enabled = 2;
+    bool crashlytics_enabled = 3;
+
+    message Route {
+      string start_crs = 1;
+      string end_crs = 2;
+    }
+
+    repeated Route favourite_routes = 4;
+}

@@ -1,4 +1,4 @@
-package me.cniekirk.trackbuddy.feature.search
+package me.cniekirk.trackbuddy.feature.home.search
 
 import androidx.annotation.StringRes
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation
@@ -7,7 +7,8 @@ import me.cniekirk.trackbuddy.navigation.Direction
 data class SearchState(
     val direction: Direction = Direction.DEPARTURES,
     val requiredDestination: TrainStation? = null,
-    val optionalDestination: TrainStation? = null
+    val optionalDestination: TrainStation? = null,
+    val openAnalyticsDialog: Boolean = false
 )
 
 sealed class SearchEffect {

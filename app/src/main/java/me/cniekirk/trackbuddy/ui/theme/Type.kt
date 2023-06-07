@@ -5,6 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import me.cniekirk.trackbuddy.R
 
@@ -62,5 +63,11 @@ val Typography = Typography(
         fontFamily = LexenDecaFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
+    ),
+    headlineSmall = TextStyle(
+        fontFamily = LexenDecaFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 24.sp,
+        lineHeight = 32.em
     )
 )
