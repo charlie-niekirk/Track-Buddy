@@ -37,9 +37,11 @@
     <string name="refresh_button">Refresh information</string>
     <string name="favourite_button">Favourite button</string>
     <string name="two_pane_search_animation">Two Pane Search Animation</string>
-    <plurals name="last_refreshed_format">
-        <item quantity="zero">Updated recently</item>
-        <item quantity="one">Last updated %1$d minute ago</item>
-        <item quantity="other">Last updated %1$d minutes ago</item>
-    </plurals>
+    <string name="last_refreshed_format">
+        {minutes, plural,
+            =0 {Updated recently}
+            one {Last updated # minute ago}
+            other {Last updated # minutes ago}
+        }
+    </string>
 </resources>

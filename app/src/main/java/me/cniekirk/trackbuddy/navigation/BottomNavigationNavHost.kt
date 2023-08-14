@@ -33,7 +33,7 @@ import me.cniekirk.trackbuddy.feature.home.stationselect.StationSelectViewModel
 @Composable
 fun BottomNavigationNavHost(
     navController: NavHostController = rememberNavController(),
-    startDestination: String = TrackBuddyDestination.Search.route
+    startDestination: String = TabDestination.LiveTrains.route
 ) {
     val backStackEntry = navController.currentBackStackEntryAsState()
 
@@ -76,7 +76,7 @@ fun BottomNavigationNavHost(
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(
-                route = TrackBuddyDestination.Search.route,
+                route = TabDestination.LiveTrains.route,
                 exitTransition = {
                     when (targetState.destination.route) {
                         SecondaryDestination.StationSelect.route, SecondaryDestination.ServiceList.route -> exitAnimation()

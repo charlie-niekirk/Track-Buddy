@@ -8,26 +8,26 @@ import me.cniekirk.trackbuddy.data.model.TrainService
 import me.cniekirk.trackbuddy.domain.model.ServiceList
 import me.cniekirk.trackbuddy.navigation.Direction
 
-data class ServiceQueryDetails(
-    val direction: Direction,
-    val required: TrainStation,
-    val optional: TrainStation?
-)
-
-data class ServiceListState(
-    val serviceList: ServiceList = ServiceList()
-)
-
-sealed class ServiceListEffect {
-
-    object NavigateBack : ServiceListEffect()
-
-    data class Error(@StringRes val message: Int) : ServiceListEffect()
-
-    data class NavigateToDetails(
-        val rid: String,
-        val serviceId: String,
-        val startCrs: String,
-        val endCrs: String
-    ) : ServiceListEffect()
-}
+//data class ServiceQueryDetails(
+//    val direction: Direction,
+//    val required: TrainStation,
+//    val optional: TrainStation?
+//)
+//
+//data class ServiceListState(
+//    val serviceList: ServiceList = ServiceList()
+//)
+//
+//sealed class ServiceListEffect {
+//
+//    object NavigateBack : ServiceListEffect()
+//
+//    data class Error(@StringRes val message: Int) : ServiceListEffect()
+//
+//    data class NavigateToDetails(
+//        val rid: String,
+//        val serviceId: String,
+//        val startCrs: String,
+//        val endCrs: String
+//    ) : ServiceListEffect()
+//}

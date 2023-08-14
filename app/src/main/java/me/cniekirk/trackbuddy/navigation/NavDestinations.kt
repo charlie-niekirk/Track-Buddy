@@ -16,38 +16,49 @@ const val REQUIRED_ARG_ID = "isRequired"
 private const val RID_ARG_ID = "rid"
 private const val SERVICE_ID_ARG_ID = "serviceId"
 
-sealed class TrackBuddyDestination(val label: String, val route: String, val icon: ImageVector) {
+sealed class TabDestination(val label: String, val route: String, val icon: ImageVector) {
 
-    object Search : TrackBuddyDestination(
-        label = "Search",
-        route = "search",
+    object LiveTrains : TabDestination(
+        label = "Live Trains",
+        route = "live",
         icon = Icons.Default.Search
     )
 
-    object Plan : TrackBuddyDestination(
+    object Plan : TabDestination(
         label = "Plan",
         route = "plan",
         icon = Icons.Default.LibraryBooks
     )
 
-    object Favourites : TrackBuddyDestination(
+    object Favourites : TabDestination(
         label = "Favourites",
         route = "favourites",
         icon = Icons.Default.Favorite
     )
 
-    object Settings : TrackBuddyDestination(
+    object Settings : TabDestination(
         label = "Settings",
         route = "settings",
         icon = Icons.Default.Settings
     )
 }
 
+sealed class SearchDestination(val route: String) {
+
+    data object Search : SearchDestination(
+        route = "search"
+    )
+
+    data object ServiceListDetail : SearchDestination(
+        route = "results"
+    )
+}
+
 val items = listOf(
-    TrackBuddyDestination.Search,
-    TrackBuddyDestination.Plan,
-    TrackBuddyDestination.Favourites,
-    TrackBuddyDestination.Settings
+    TabDestination.LiveTrains,
+    TabDestination.Plan,
+    TabDestination.Favourites,
+    TabDestination.Settings
 )
 
 sealed class SecondaryDestination(val route: String) {

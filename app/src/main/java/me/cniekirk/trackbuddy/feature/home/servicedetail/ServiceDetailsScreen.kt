@@ -64,6 +64,7 @@ import me.cniekirk.trackbuddy.feature.home.servicedetail.Loading.NO_DATA
 import me.cniekirk.trackbuddy.feature.home.servicedetail.Loading.SOME
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import java.text.MessageFormat
 import java.util.Locale
 
 @Composable
@@ -181,10 +182,9 @@ fun ServiceDetailsScreenContent(
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = pluralStringResource(
-                                    R.plurals.last_refreshed_format,
-                                    minutesSinceRefresh,
-                                    minutesSinceRefresh
+                                text = MessageFormat.format(
+                                    LocalContext.current.getString(R.string.last_refreshed_format),
+                                    mapOf("minutes" to minutesSinceRefresh)
                                 ),
                                 style = MaterialTheme.typography.bodySmall
                             )

@@ -13,7 +13,7 @@ import me.cniekirk.trackbuddy.domain.repository.PreferencesRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
+abstract class RepositoryBindings {
 
     @Binds
     abstract fun bindHuxleyRepository(huxleyRepositoryImpl: HuxleyRepositoryImpl): HuxleyRepository

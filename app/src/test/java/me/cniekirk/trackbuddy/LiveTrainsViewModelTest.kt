@@ -17,7 +17,7 @@ import org.junit.Test
 import org.orbitmvi.orbit.test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SearchViewModelTest {
+class LiveTrainsViewModelTest {
 
     private lateinit var searchViewModel: SearchViewModel
 

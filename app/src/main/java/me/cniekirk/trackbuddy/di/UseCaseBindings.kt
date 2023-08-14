@@ -15,7 +15,7 @@ import me.cniekirk.trackbuddy.domain.usecase.GetTrainServiceDetailsUseCaseImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class UseCaseModule {
+abstract class UseCaseBindings {
 
     @Binds
     abstract fun bindGetDeparturesUseCase(getDeparturesUseCaseImpl: GetDeparturesUseCaseImpl): GetDeparturesUseCase

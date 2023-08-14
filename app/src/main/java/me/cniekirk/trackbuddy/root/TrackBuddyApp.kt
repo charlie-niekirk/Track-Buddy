@@ -5,13 +5,15 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import androidx.window.layout.DisplayFeature
-import me.cniekirk.trackbuddy.navigation.BottomNavigationNavHost
-import me.cniekirk.trackbuddy.navigation.TrackBuddyDestination
+import me.cniekirk.trackbuddy.navigation.SearchDestination
+import me.cniekirk.trackbuddy.navigation.TabDestination
 import me.cniekirk.trackbuddy.ui.utils.ContentType
 import me.cniekirk.trackbuddy.ui.utils.NavigationType
 
@@ -54,13 +56,31 @@ fun TrackBuddyNavHost(
     navigationType: NavigationType,
     modifier: Modifier = Modifier
 ) {
+    when (navigationType) {
+        NavigationType.BOTTOM_NAVIGATION -> {
+
+        }
+        NavigationType.NAVIGATION_RAIL -> {
+
+        }
+    }
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = TrackBuddyDestination.Search.route
+        startDestination = TabDestination.LiveTrains.route
     ) {
         // TrackBuddy search screen
-        composable(TrackBuddyDestination.Search.route) {
+        searchGraph(navController)
+    }
+}
+
+fun NavGraphBuilder.searchGraph(navController: NavController, ) {
+    navigation(startDestination = SearchDestination.Search.route, route = TabDestination.LiveTrains.route) {
+        composable(SearchDestination.Search.route) {
+
+        }
+        composable(SearchDestination.ServiceListDetail.route) {
+            // Two pane stuff
 
         }
     }
