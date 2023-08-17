@@ -49,8 +49,12 @@ sealed class SearchDestination(val route: String) {
         route = "search"
     )
 
+    data object StationSelect : SecondaryDestination(
+        route = "stationSelect/{$REQUIRED_ARG_ID}"
+    )
+
     data object ServiceListDetail : SearchDestination(
-        route = "results"
+        route = "results/{$START_ARG_ID}/{$DIRECTION_ARG_ID}?$END_ARG_ID={$END_ARG_ID}"
     )
 }
 
@@ -95,9 +99,22 @@ fun NavController.navigateToServiceDetails(rid: String, serviceId: String, start
     this.navigate("serviceDetails/$rid/$serviceId/$start?$end")
 }
 
+fun NavController.navigateToServiceListDetails(start: String, end: String?, direction: Direction) {
+    this.navigate("results/$start/${direction.name}?$END_ARG_ID=$end")
+}
+
 enum class Direction {
     DEPARTURES,
     ARRIVALS
+}
+
+class ServiceListDetailsArgs(val start: String, val end: String?, val direction: Direction) {
+    constructor(savedStateHandle: SavedStateHandle) :
+            this(
+                checkNotNull(savedStateHandle[START_ARG_ID]) as String,
+                savedStateHandle.get<String>(END_ARG_ID),
+                Direction.valueOf(checkNotNull(savedStateHandle[DIRECTION_ARG_ID]) as String)
+            )
 }
 
 class ServiceListArgs(val start: String, val end: String?, val direction: Direction) {

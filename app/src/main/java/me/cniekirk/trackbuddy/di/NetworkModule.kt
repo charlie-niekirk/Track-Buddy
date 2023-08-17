@@ -8,13 +8,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import me.cniekirk.trackbuddy.BuildConfig
 import me.cniekirk.trackbuddy.data.remote.GwrService
 import me.cniekirk.trackbuddy.data.remote.HuxleyService
 import me.cniekirk.trackbuddy.data.util.SingleOrListAdapterFactory
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.orbitmvi.orbit.viewmodel.BuildConfig
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber

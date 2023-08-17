@@ -16,12 +16,12 @@ plugins {
 
 android {
     namespace = "me.cniekirk.trackbuddy"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "me.cniekirk.trackbuddy"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.1"
 
@@ -53,7 +53,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.5"
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
     packaging {
         resources {
@@ -125,7 +125,7 @@ dependencies {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.18.0"
+        artifact = "com.google.protobuf:protoc:3.24.0"
     }
     generateProtoTasks {
         all().forEach { task ->

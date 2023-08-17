@@ -51,21 +51,11 @@ data class ServiceDetailsState(
 
 data class ServiceListDetailState(
     val serviceListState: ServiceListState = ServiceListState(),
-    val serviceDetailsState: ServiceDetailsState = ServiceDetailsState()
+    val serviceDetailsState: ServiceDetailsState = ServiceDetailsState(),
+    val selectedRid: String? = null
 )
 
 sealed class ServiceListDetailEffect {
 
-    data object NavigateBack : ServiceListDetailEffect()
-
     data class Error(@StringRes val message: Int) : ServiceListDetailEffect()
-
-    data class NavigateToDetails(
-        val rid: String,
-        val serviceId: String,
-        val startCrs: String,
-        val endCrs: String
-    ) : ServiceListDetailEffect()
-
-    data object GoBack : ServiceListDetailEffect()
 }

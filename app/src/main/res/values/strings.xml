@@ -44,4 +44,6 @@
             other {Last updated # minutes ago}
         }
     </string>
+    <string name="loading_error">Loading error!</string>
+    <string name="coach_loading_error">Coach loading error!</string>
 </resources>

@@ -1,7 +1,7 @@
 package me.cniekirk.trackbuddy.domain.usecase
 
 import me.cniekirk.trackbuddy.data.util.Result
-import me.cniekirk.trackbuddy.feature.home.servicedetail.TrainInfo
+import me.cniekirk.trackbuddy.feature.home.servicelistdetail.TrainInfo
 
 interface GetCoachInformationUseCase {
 

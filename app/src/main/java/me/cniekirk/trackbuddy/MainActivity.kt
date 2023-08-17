@@ -11,7 +11,7 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
 import com.google.accompanist.adaptive.calculateDisplayFeatures
 import dagger.hilt.android.AndroidEntryPoint
-import me.cniekirk.trackbuddy.navigation.BottomNavigationNavHost
+import me.cniekirk.trackbuddy.root.TrackBuddyAppRoot
 import me.cniekirk.trackbuddy.ui.theme.TrackBuddyTheme
 
 @AndroidEntryPoint
@@ -29,7 +29,11 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val windowSizeClass = calculateWindowSizeClass(this)
                     val displayFeatures = calculateDisplayFeatures(this)
-                    BottomNavigationNavHost(windowSizeClass)
+//                    BottomNavigationNavHost(windowSizeClass)
+                    TrackBuddyAppRoot(
+                        windowSizeClass = windowSizeClass,
+                        displayFeatures = displayFeatures
+                    )
                 }
             }
         }

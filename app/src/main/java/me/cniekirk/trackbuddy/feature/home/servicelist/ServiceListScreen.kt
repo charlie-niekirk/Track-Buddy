@@ -2,7 +2,6 @@ package me.cniekirk.trackbuddy.feature.home.servicelist
 
 import android.text.Html
 import android.text.style.URLSpan
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -49,46 +47,8 @@ import kotlinx.collections.immutable.persistentListOf
 import me.cniekirk.trackbuddy.R
 import me.cniekirk.trackbuddy.domain.model.DepartureTime
 import me.cniekirk.trackbuddy.domain.model.Service
-import me.cniekirk.trackbuddy.domain.model.ServiceStop
 import me.cniekirk.trackbuddy.navigation.Direction
 import me.cniekirk.trackbuddy.ui.theme.TrackBuddyTheme
-import org.orbitmvi.orbit.compose.collectAsState
-import org.orbitmvi.orbit.compose.collectSideEffect
-
-@Composable
-fun ServiceListScreen(
-    viewModel: ServiceListViewModel,
-    navigateBack: () -> Unit,
-    showDetails: (String, String, String, String) -> Unit
-) {
-    val context = LocalContext.current
-    val state = viewModel.collectAsState().value
-
-    viewModel.collectSideEffect { sideEffect ->
-        when (sideEffect) {
-            is ServiceListEffect.Error -> {
-                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
-            }
-            ServiceListEffect.NavigateBack -> {
-                navigateBack()
-            }
-            is ServiceListEffect.NavigateToDetails -> {
-                showDetails(sideEffect.rid, sideEffect.serviceId, sideEffect.startCrs, sideEffect.endCrs)
-            }
-        }
-    }
-
-    ServiceListScreenContent(
-        direction = state.serviceList.direction,
-        requiredStation = state.serviceList.requiredStation,
-        optionalStation = state.serviceList.optionalStation,
-        stationMessages = state.serviceList.stationMessages,
-        services = state.serviceList.serviceList,
-        onBackPressed = viewModel::backPressed,
-        onServicePressed = viewModel::onServicePressed,
-        onFavouritePressed = {}
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

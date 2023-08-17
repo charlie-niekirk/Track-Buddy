@@ -1,6 +1,5 @@
 package me.cniekirk.trackbuddy.feature.home.servicedetail
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -29,7 +28,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -50,7 +48,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -58,47 +55,11 @@ import androidx.compose.ui.unit.sp
 import kotlinx.collections.immutable.ImmutableList
 import me.cniekirk.trackbuddy.R
 import me.cniekirk.trackbuddy.domain.model.ServiceStop
-import me.cniekirk.trackbuddy.feature.home.servicedetail.Loading.LOTS
-import me.cniekirk.trackbuddy.feature.home.servicedetail.Loading.NONE
-import me.cniekirk.trackbuddy.feature.home.servicedetail.Loading.NO_DATA
-import me.cniekirk.trackbuddy.feature.home.servicedetail.Loading.SOME
-import org.orbitmvi.orbit.compose.collectAsState
-import org.orbitmvi.orbit.compose.collectSideEffect
+import me.cniekirk.trackbuddy.feature.home.servicelistdetail.CoachInfo
+import me.cniekirk.trackbuddy.feature.home.servicelistdetail.Loading
+import me.cniekirk.trackbuddy.feature.home.servicelistdetail.TrainInfo
 import java.text.MessageFormat
 import java.util.Locale
-
-@Composable
-fun ServiceDetailsScreen(
-    viewModel: ServiceDetailsViewModel,
-    onGoBack: () -> Unit
-) {
-    val context = LocalContext.current
-    val state = viewModel.collectAsState().value
-
-    viewModel.collectSideEffect { sideEffect ->
-        when (sideEffect) {
-            ServiceDetailsEffect.GoBack -> {
-                onGoBack()
-            }
-            is ServiceDetailsEffect.LoadingError -> {
-                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    ServiceDetailsScreenContent(
-        origin = state.startingStation.stationName,
-        destination = state.endingStation.stationName,
-        trainInfo = state.trainInfo,
-        originCode = state.startingStation.stationCode,
-        destinationCode = state.endingStation.stationCode,
-        targetIndex = state.targetStationIndex,
-        journey = state.serviceStops,
-        minutesSinceRefresh = state.minutesSinceUpdate,
-        isRefreshing = state.isRefreshing,
-        onBackPressed = viewModel::onBackPressed
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -250,10 +211,10 @@ fun ServiceDetailsScreenContent(
 @Composable
 fun CoachItem(coachInfo: CoachInfo, isFront: Boolean = false) {
     val bgColor = when (coachInfo.loading) {
-        NO_DATA -> Color.LightGray.copy(alpha = 0.4f)
-        LOTS -> colorResource(id = R.color.green)
-        SOME -> colorResource(id = R.color.amber)
-        NONE -> colorResource(id = R.color.red)
+        Loading.NO_DATA -> Color.LightGray.copy(alpha = 0.4f)
+        Loading.LOTS -> colorResource(id = R.color.green)
+        Loading.SOME -> colorResource(id = R.color.amber)
+        Loading.NONE -> colorResource(id = R.color.red)
     }
 
     if (isFront) {
