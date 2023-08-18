@@ -85,6 +85,7 @@ class ServiceListDetailViewModel @Inject constructor(
         reduce {
             state.copy(selectedRid = service.rid)
         }
+        getServiceDetails(service.rid, service.serviceId, serviceListArgs.start, serviceListArgs.end ?: "")
         startTimer()
     }
 
@@ -114,35 +115,35 @@ class ServiceListDetailViewModel @Inject constructor(
                 }
 
                 // Get coach information
-                getCoachInformation(serviceId)
+//                getCoachInformation(serviceId)
             }
         }
     }
 
-    private fun getCoachInformation(serviceId: String) = intent {
-        when (val response = getCoachInformationUseCase(serviceId)) {
-            is Result.Failure -> {
-                reduce {
-                    state.copy(
-                        serviceDetailsState = state.serviceDetailsState.copy(
-                            isRefreshing = false
-                        )
-                    )
-                }
-                postSideEffect(ServiceListDetailEffect.Error(R.string.coach_loading_error))
-            }
-            is Result.Success -> {
-                reduce {
-                    state.copy(
-                        serviceDetailsState = state.serviceDetailsState.copy(
-                            trainInfo = response.data,
-                            isRefreshing = false
-                        )
-                    )
-                }
-            }
-        }
-    }
+//    private fun getCoachInformation(serviceId: String) = intent {
+//        when (val response = getCoachInformationUseCase(serviceId)) {
+//            is Result.Failure -> {
+//                reduce {
+//                    state.copy(
+//                        serviceDetailsState = state.serviceDetailsState.copy(
+//                            isRefreshing = false
+//                        )
+//                    )
+//                }
+//                postSideEffect(ServiceListDetailEffect.Error(R.string.coach_loading_error))
+//            }
+//            is Result.Success -> {
+//                reduce {
+//                    state.copy(
+//                        serviceDetailsState = state.serviceDetailsState.copy(
+//                            trainInfo = response.data,
+//                            isRefreshing = false
+//                        )
+//                    )
+//                }
+//            }
+//        }
+//    }
 
     private fun startTimer() = intent {
         job = viewModelScope.launch {

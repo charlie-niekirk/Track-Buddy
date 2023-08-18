@@ -85,16 +85,6 @@ fun ServiceDetailsScreenContent(
                     text = stringResource(id = R.string.route_format_string, originCode, destinationCode),
                     style = MaterialTheme.typography.titleMedium
                 )
-            },
-            navigationIcon = {
-                Image(
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                        .clickable { onBackPressed() },
-                    imageVector = Icons.Default.ArrowBack,
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurface),
-                    contentDescription = stringResource(id = R.string.back_button)
-                )
             }
         )
 
@@ -142,13 +132,13 @@ fun ServiceDetailsScreenContent(
                         }
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = MessageFormat.format(
-                                    LocalContext.current.getString(R.string.last_refreshed_format),
-                                    mapOf("minutes" to minutesSinceRefresh)
-                                ),
-                                style = MaterialTheme.typography.bodySmall
-                            )
+//                            Text(
+//                                text = MessageFormat.format(
+//                                    LocalContext.current.getString(R.string.last_refreshed_format),
+//                                    mapOf("minutes" to minutesSinceRefresh)
+//                                ),
+//                                style = MaterialTheme.typography.bodySmall
+//                            )
 
                             Spacer(modifier = Modifier.weight(1f))
 

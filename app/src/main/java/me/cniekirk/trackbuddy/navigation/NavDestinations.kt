@@ -18,25 +18,25 @@ private const val SERVICE_ID_ARG_ID = "serviceId"
 
 sealed class TabDestination(val label: String, val route: String, val icon: ImageVector) {
 
-    object LiveTrains : TabDestination(
+    data object LiveTrains : TabDestination(
         label = "Live Trains",
         route = "live",
         icon = Icons.Default.Search
     )
 
-    object Plan : TabDestination(
+    data object Plan : TabDestination(
         label = "Plan",
         route = "plan",
         icon = Icons.Default.LibraryBooks
     )
 
-    object Favourites : TabDestination(
+    data object Favourites : TabDestination(
         label = "Favourites",
         route = "favourites",
         icon = Icons.Default.Favorite
     )
 
-    object Settings : TabDestination(
+    data object Settings : TabDestination(
         label = "Settings",
         route = "settings",
         icon = Icons.Default.Settings

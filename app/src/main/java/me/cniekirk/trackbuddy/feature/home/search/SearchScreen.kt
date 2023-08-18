@@ -29,6 +29,9 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -128,26 +131,47 @@ fun SearchScreenContent(
             }
         )
 
-        Row(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        SingleChoiceSegmentedButtonRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
         ) {
-            TextRadioButton(
-                label = stringResource(id = R.string.departing_direction_label),
+            SegmentedButton(
+                shape = SegmentedButtonDefaults.shape(position = 0, count = 2),
+                onClick = { onDepartingPressed() },
                 selected = direction == Direction.DEPARTURES
             ) {
-                onDepartingPressed()
+                Text(stringResource(id = R.string.departing_direction_label))
             }
-
-            Spacer(modifier = Modifier.size(32.dp))
-
-            TextRadioButton(
-                label = stringResource(id = R.string.arriving_direction_label),
+            SegmentedButton(
+                shape = SegmentedButtonDefaults.shape(position = 1, count = 2),
+                onClick = { onArrivingPressed() },
                 selected = direction == Direction.ARRIVALS
             ) {
-                onArrivingPressed()
+                Text(stringResource(id = R.string.arriving_direction_label))
             }
         }
+
+//        Row(
+//            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            TextRadioButton(
+//                label = stringResource(id = R.string.departing_direction_label),
+//                selected = direction == Direction.DEPARTURES
+//            ) {
+//                onDepartingPressed()
+//            }
+//
+//            Spacer(modifier = Modifier.size(32.dp))
+//
+//            TextRadioButton(
+//                label = stringResource(id = R.string.arriving_direction_label),
+//                selected = direction == Direction.ARRIVALS
+//            ) {
+//                onArrivingPressed()
+//            }
+//        }
 
         val requiredLabel = if (direction == Direction.DEPARTURES) {
             stringResource(id = R.string.departing_label)

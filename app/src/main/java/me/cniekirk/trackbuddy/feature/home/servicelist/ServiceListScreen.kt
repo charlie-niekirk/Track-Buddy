@@ -89,13 +89,13 @@ fun ServiceListScreenContent(
                     contentDescription = stringResource(id = R.string.back_button)
                 )
             },
-            actions = {
-                Icon(
-                    modifier = Modifier.clickable { onFavouritePressed() },
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = stringResource(id = R.string.favourite_button)
-                )
-            }
+//            actions = {
+//                Icon(
+//                    modifier = Modifier.clickable { onFavouritePressed() },
+//                    imageVector = Icons.Default.Favorite,
+//                    contentDescription = stringResource(id = R.string.favourite_button)
+//                )
+//            }
         )
 
         if (stationMessages.isNotEmpty()) {

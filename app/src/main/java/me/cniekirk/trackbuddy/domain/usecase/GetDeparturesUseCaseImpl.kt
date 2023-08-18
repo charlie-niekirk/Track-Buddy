@@ -27,7 +27,7 @@ class GetDeparturesUseCaseImpl @Inject constructor(
             }
             is Result.Success -> {
                 val list = response.data.trainServices ?: listOf()
-                val messages = response.data.nrccMessages?.mapNotNull { it?.xhtmlMessage } ?: persistentListOf()
+                val messages = response.data.nrccMessages?.mapNotNull { it?.xhtmlMessage?.trim('\n') } ?: persistentListOf()
                 Result.Success(
                     ServiceList(
                         direction = Direction.DEPARTURES,
