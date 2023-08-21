@@ -1,16 +1,11 @@
-package me.cniekirk.trackbuddy.feature.servicelist
+package me.cniekirk.trackbuddy.feature.home.servicelist
 
-import android.text.SpannedString
-import android.widget.Toast
-import android.text.Annotation
 import android.text.Html
 import android.text.style.URLSpan
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,10 +18,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,7 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -53,39 +49,6 @@ import me.cniekirk.trackbuddy.domain.model.DepartureTime
 import me.cniekirk.trackbuddy.domain.model.Service
 import me.cniekirk.trackbuddy.navigation.Direction
 import me.cniekirk.trackbuddy.ui.theme.TrackBuddyTheme
-import org.orbitmvi.orbit.compose.collectAsState
-import org.orbitmvi.orbit.compose.collectSideEffect
-import timber.log.Timber
-
-@Composable
-fun ServiceListScreen(
-    viewModel: ServiceListViewModel,
-    navigateBack: () -> Unit
-) {
-    val context = LocalContext.current
-    val state = viewModel.collectAsState().value
-
-    viewModel.collectSideEffect { sideEffect ->
-        when (sideEffect) {
-            is ServiceListEffect.Error -> {
-                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
-            }
-            ServiceListEffect.NavigateBack -> {
-                navigateBack()
-            }
-        }
-    }
-
-    ServiceListScreenContent(
-        direction = state.serviceList.direction,
-        requiredStation = state.serviceList.requiredStation,
-        optionalStation = state.serviceList.optionalStation,
-        stationMessages = state.serviceList.stationMessages,
-        services = state.serviceList.serviceList,
-        onBackPressed = viewModel::backPressed,
-        onServicePressed = viewModel::onServicePressed
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,7 +59,8 @@ fun ServiceListScreenContent(
     stationMessages: ImmutableList<String>,
     services: ImmutableList<Service>?,
     onBackPressed: () -> Unit,
-    onServicePressed: (Service) -> Unit
+    onServicePressed: (Service) -> Unit,
+    onFavouritePressed: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -124,7 +88,14 @@ fun ServiceListScreenContent(
                     colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurface),
                     contentDescription = stringResource(id = R.string.back_button)
                 )
-            }
+            },
+//            actions = {
+//                Icon(
+//                    modifier = Modifier.clickable { onFavouritePressed() },
+//                    imageVector = Icons.Default.Favorite,
+//                    contentDescription = stringResource(id = R.string.favourite_button)
+//                )
+//            }
         )
 
         if (stationMessages.isNotEmpty()) {
@@ -142,14 +113,14 @@ fun ServiceListScreenContent(
             CircularProgressIndicator()
             Spacer(modifier = Modifier.weight(1f))
         } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-            ) {
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(services) { service ->
-                    ServiceItem(service = service) {
-                        onServicePressed(it)
-                    }
+                    ServiceItem(
+                        modifier = Modifier
+                            .clickable { onServicePressed(service) }
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        service = service
+                    )
                     Divider()
                 }
             }
@@ -185,7 +156,7 @@ fun StationMessage(
     message: String
 ) {
     val annotatedMessage = annotatedStringResource(
-        message = message,
+        message = message.trimEnd(),
         spanStyles = { _ -> SpanStyle(textDecoration = TextDecoration.Underline) }
     )
     val uriHandler = LocalUriHandler.current
@@ -213,13 +184,12 @@ fun StationMessage(
 
 @Composable
 fun ServiceItem(
-    service: Service,
-    onServicePressed: (Service) -> Unit
+    modifier: Modifier = Modifier,
+    service: Service
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .clickable { onServicePressed(service) }
             .graphicsLayer {
                 if (service.departureTime is DepartureTime.Departed) {
                     alpha = 0.5f
@@ -300,7 +270,8 @@ fun ServiceListScreenContentPreview() {
                 services = persistentListOf(),
                 onBackPressed = {},
                 onServicePressed = {},
-                stationMessages = persistentListOf()
+                stationMessages = persistentListOf(),
+                onFavouritePressed = {}
             )
         }
     }

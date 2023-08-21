@@ -28,3 +28,6 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLParameters
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
+
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception

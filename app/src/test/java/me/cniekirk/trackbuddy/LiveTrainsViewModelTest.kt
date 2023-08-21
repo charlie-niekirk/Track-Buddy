@@ -6,23 +6,28 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import me.cniekirk.trackbuddy.data.local.crs.TrainStation
-import me.cniekirk.trackbuddy.feature.search.SearchEffect
-import me.cniekirk.trackbuddy.feature.search.SearchState
-import me.cniekirk.trackbuddy.feature.search.SearchViewModel
+import me.cniekirk.trackbuddy.domain.repository.AnalyticsRepository
+import me.cniekirk.trackbuddy.domain.repository.PreferencesRepository
+import me.cniekirk.trackbuddy.feature.home.search.SearchEffect
+import me.cniekirk.trackbuddy.feature.home.search.SearchState
+import me.cniekirk.trackbuddy.feature.home.search.SearchViewModel
 import me.cniekirk.trackbuddy.navigation.Direction
 import org.junit.Before
 import org.junit.Test
 import org.orbitmvi.orbit.test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SearchViewModelTest {
+class LiveTrainsViewModelTest {
 
     private lateinit var searchViewModel: SearchViewModel
+
     private val savedStateHandle = mockk<SavedStateHandle>()
+    private val preferencesRepository = mockk<PreferencesRepository>()
+    private val analyticsRepository = mockk<AnalyticsRepository>()
 
     @Before
     fun setup() {
-        searchViewModel = SearchViewModel(savedStateHandle)
+        searchViewModel = SearchViewModel(savedStateHandle, preferencesRepository, analyticsRepository)
     }
 
     @Test

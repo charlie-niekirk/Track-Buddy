@@ -8,15 +8,18 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import me.cniekirk.trackbuddy.BuildConfig
+import me.cniekirk.trackbuddy.data.remote.GwrService
 import me.cniekirk.trackbuddy.data.remote.HuxleyService
 import me.cniekirk.trackbuddy.data.util.SingleOrListAdapterFactory
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.orbitmvi.orbit.viewmodel.BuildConfig
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -56,7 +59,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: Lazy<OkHttpClient>, moshi: Moshi): Retrofit {
+    @Named("main")
+    fun provideMainRetrofit(okHttpClient: Lazy<OkHttpClient>, moshi: Moshi): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://huxley2.azurewebsites.net/")
             .callFactory { okHttpClient.get().newCall(it) }
@@ -66,7 +70,24 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideHuxleyService(retrofit: Retrofit): HuxleyService {
+    @Named("gwr")
+    fun provideGwrRetrofit(okHttpClient: Lazy<OkHttpClient>, moshi: Moshi): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://prod.mobileapi.gwr.com/")
+            .callFactory { okHttpClient.get().newCall(it) }
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideHuxleyService(@Named("main") retrofit: Retrofit): HuxleyService {
         return retrofit.create(HuxleyService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGwrService(@Named("gwr") retrofit: Retrofit): GwrService {
+        return retrofit.create(GwrService::class.java)
     }
 }

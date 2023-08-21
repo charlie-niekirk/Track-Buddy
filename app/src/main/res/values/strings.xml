@@ -24,4 +24,27 @@
     <string name="platform_format_label">Platform %1$s</string>
     <string name="on_time_label">On Time</string>
     <string name="minutes_late_format">%1$d minutes late</string>
+    <string name="analytics_explainer">I use crash reports to diagnose bugs in the app. I use analytics to see what parts of the app are used the most to focus my development.</string>
+    <string name="analytics_dialog_title">Enable reporting?</string>
+    <string name="crashlytics_switch_label">Crash reporting</string>
+    <string name="analytics_switch_label">Analytics</string>
+    <string name="confirm_dialog_label">Confirm</string>
+    <string name="route_format_string">%1$s - %2$s</string>
+    <string name="platform_name">Platform %1$s</string>
+    <string name="coaches_format">%1$d coaches</string>
+    <string name="more_info_button">More information</string>
+    <string name="coaches_direction">Direction of travel</string>
+    <string name="refresh_button">Refresh information</string>
+    <string name="favourite_button">Favourite button</string>
+    <string name="two_pane_search_animation">Two Pane Search Animation</string>
+    <string name="last_refreshed_format">
+        {minutes, plural,
+            =0 {Updated recently}
+            one {Last updated # minute ago}
+            other {Last updated # minutes ago}
+        }
+    </string>
+    <string name="loading_error">Loading error!</string>
+    <string name="coach_loading_error">Coach loading error!</string>
+    <string name="track_buddy_appwidget_description">Track Buddy\'s app widget</string>
 </resources>

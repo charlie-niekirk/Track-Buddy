@@ -15,22 +15,21 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
-class GetDeparturesUseCaseImpl @Inject constructor(
+class GetArrivalsUseCaseImpl @Inject constructor(
     private val huxleyRepository: HuxleyRepository
-) : GetDeparturesUseCase {
+) : GetArrivalsUseCase {
 
     override suspend fun invoke(requiredCode: String, optionalCode: String?): Result<ServiceList> {
-
-        return when (val response = huxleyRepository.getDepartureBoard(requiredCode, optionalCode)) {
+        return when (val response = huxleyRepository.getArrivalBoard(requiredCode, optionalCode)) {
             is Result.Failure -> {
                 response
             }
             is Result.Success -> {
                 val list = response.data.trainServices ?: listOf()
-                val messages = response.data.nrccMessages?.mapNotNull { it?.xhtmlMessage?.trim('\n') } ?: persistentListOf()
+                val messages = response.data.nrccMessages?.mapNotNull { it?.xhtmlMessage } ?: persistentListOf()
                 Result.Success(
                     ServiceList(
-                        direction = Direction.DEPARTURES,
+                        direction = Direction.ARRIVALS,
                         requiredStation = response.data.crs ?: "",
                         optionalStation = optionalCode ?: "",
                         stationMessages = messages.toImmutableList(),
@@ -50,10 +49,10 @@ class GetDeparturesUseCaseImpl @Inject constructor(
 
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         val scheduled = LocalDateTime
-            .parse(this.std)
+            .parse(this.sta)
             .toLocalTime()
         val estimated = LocalDateTime
-            .parse(this.etd)
+            .parse(this.eta)
             .toLocalTime()
 
         // 3 means delayed with no time estimate
@@ -93,12 +92,5 @@ class GetDeparturesUseCaseImpl @Inject constructor(
                 platform = platform ?: ""
             )
         }
-    }
-
-    private fun String.parseTime(): String {
-        return LocalDateTime
-            .parse(this)
-            .toLocalTime()
-            .format(DateTimeFormatter.ofPattern("HH:mm"))
     }
 }

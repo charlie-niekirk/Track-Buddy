@@ -4,6 +4,8 @@ import me.cniekirk.trackbuddy.data.local.crs.TrainStation
 import me.cniekirk.trackbuddy.data.local.crs.TrainStationDao
 import me.cniekirk.trackbuddy.data.model.DepartureBoard
 import me.cniekirk.trackbuddy.data.model.TrainService
+import me.cniekirk.trackbuddy.data.model.gwr.CoachResponse
+import me.cniekirk.trackbuddy.data.remote.GwrService
 import me.cniekirk.trackbuddy.data.remote.HuxleyService
 import me.cniekirk.trackbuddy.data.util.safeApiCall
 import me.cniekirk.trackbuddy.domain.repository.HuxleyRepository
@@ -12,6 +14,7 @@ import javax.inject.Inject
 
 class HuxleyRepositoryImpl @Inject constructor(
     private val huxleyService: HuxleyService,
+    private val gwrService: GwrService,
     private val trainStationDao: TrainStationDao
 ) : HuxleyRepository {
 
@@ -56,14 +59,22 @@ class HuxleyRepositoryImpl @Inject constructor(
         arrivingStationCode: String,
         departingStationCode: String?
     ): Result<DepartureBoard> {
-        TODO("Not yet implemented")
+        return if (departingStationCode == null) {
+            safeApiCall { huxleyService.getArrivals(arrivingStationCode) }
+        } else {
+            safeApiCall { huxleyService.getArrivalsFiltered(arrivingStationCode, departingStationCode) }
+        }
     }
 
     override suspend fun getServiceDetails(rid: String): Result<TrainService> {
-        TODO("Not yet implemented")
+        return safeApiCall { huxleyService.getServiceDetails(rid) }
     }
 
     override suspend fun addTracker(rid: String, startCrs: String): Result<String> {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun getCoachInformation(serviceId: String): Result<CoachResponse> {
+        return safeApiCall { gwrService.getCoachData(serviceId) }
     }
 }
