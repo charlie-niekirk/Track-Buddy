@@ -46,4 +46,5 @@
     </string>
     <string name="loading_error">Loading error!</string>
     <string name="coach_loading_error">Coach loading error!</string>
+    <string name="track_buddy_appwidget_description">Track Buddy\'s app widget</string>
 </resources>

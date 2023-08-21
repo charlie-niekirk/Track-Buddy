@@ -78,6 +78,8 @@ dependencies {
     implementation(libs.compose.livedata)
     implementation(libs.material3)
     implementation(libs.icons)
+    implementation(libs.glance.appwidget)
+    implementation(libs.glance.material3)
 
     implementation(libs.immutable)
 
